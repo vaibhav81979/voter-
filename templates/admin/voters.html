@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Voter Management | E-Voting Portal</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <div class="tricolor">
+        <div class="tc-s"></div>
+        <div class="tc-w"></div>
+        <div class="tc-g"></div>
+    </div>
+
+    <header class="header">
+        <div class="emblem-ring">
+            <svg width="42" height="42" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#F0C040" stroke-width="6" />
+                <circle cx="50" cy="50" r="34" fill="none" stroke="#F0C040" stroke-width="2" />
+                <circle cx="50" cy="50" r="8" fill="#F0C040" />
+                <g stroke="#F0C040" stroke-width="2">
+                    <line x1="50" y1="16" x2="50" y2="84" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(15 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(30 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(45 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(60 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(75 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(90 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(105 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(120 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(135 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(150 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(165 50 50)" />
+                </g>
+            </svg>
+        </div>
+        <div class="header-txt">
+            <h1>Election Commission of India</h1>
+            <div class="header-devanagari">भारत निर्वाचन आयोग</div>
+            <p>Electronic Voting Portal &nbsp;·&nbsp; General Elections 2026</p>
+        </div>
+        <div style="margin-left:auto; display:flex; gap:20px; align-items:center;">
+             <span class="text-xs font-bold text-white/80 uppercase tracking-widest border border-white/20 rounded-xl px-4 py-1">Chief Electoral Officer</span>
+             <a href="{{ url_for('admin.admin_logout') }}" class="text-sm text-white/70 hover:text-white font-bold transition-colors">Logout ⏏</a>
+        </div>
+    </header>
+
+    <div class="border-strip"></div>
+
+    <nav class="nav-ribbon">
+        <a href="{{ url_for('voter.welcome') }}">🌐 Language</a>
+        <a href="{{ url_for('voter.home') }}">🏠 Home</a>
+        <a href="{{ url_for('voter.login') }}">🗳️ Voter Login</a>
+        <a href="{{ url_for('voter.register') }}">📝 Register to Vote</a>
+        <a href="{{ url_for('voter.booth') }}">📍 Find Your Booth</a>
+        <a href="{{ url_for('voter.candidate') }}">👤 Candidate Info</a>
+        <a href="{{ url_for('voter.results') }}">📊 Results</a>
+        <a href="{{ url_for('voter.help_page') }}">❓ Help & Support</a>
+        <a href="{{ url_for('admin.dashboard') }}" class="active" style="margin-left:auto;">🔐 Admin Portal</a>
+    </nav>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="hidden lg:flex w-64 flex-col border-r border-slate-200 bg-white p-4 gap-2 h-full shadow-sm z-10">
+            <nav class="flex flex-col gap-1">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.dashboard') }}">
+                    <span class="material-symbols-outlined">dashboard</span> Dashboard
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-orange-50 text-primary font-bold transition-colors" href="{{ url_for('admin.voters') }}">
+                    <span class="material-symbols-outlined">group</span> Voters Database
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.fraud_alerts') }}">
+                    <span class="material-symbols-outlined">security</span> Security Logs
+                    <span class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">2</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.manage_candidates') }}">
+                    <span class="material-symbols-outlined">how_to_vote</span> Candidates
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.settings') }}">
+                    <span class="material-symbols-outlined">settings</span> Settings
+                </a>
+            </nav>
+            <div class="mt-auto p-5 rounded-xl bg-slate-900 text-white relative overflow-hidden shadow-lg border border-slate-800">
+                <div class="relative z-10">
+                    <p class="text-[10px] font-black text-primary mb-1 tracking-widest">ACTIVE ELECTION</p>
+                    <p class="text-sm font-bold opacity-90 leading-tight">General Elections 2026 Phase III</p>
+                    <div class="mt-4 h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                        <div class="h-full bg-primary w-[65%] shadow-[0_0_10px_rgba(255,153,51,0.5)]"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6 bg-slate-50">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold">Voter Management</h1>
+                    <p class="text-sm text-slate-500">Search, verify, and manage registered voters</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="alert('Bulk verification initialized')" class="px-4 py-2 bg-indian-green text-white rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-green-700 transition">
+                        <span class="material-symbols-outlined text-sm">verified</span> Bulk Verify Selected
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search -->
+            <form action="{{ url_for('admin.voters') }}" method="GET" class="flex gap-2">
+                <div class="relative flex-1">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                    <input name="search" value="{{ search or '' }}" class="w-full h-12 pl-10 pr-4 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-primary focus:border-primary outline-none" placeholder="Search by EPIC, name, or constituency..." type="text" />
+                </div>
+                <button type="submit" class="px-6 py-2 bg-primary hover:bg-orange-500 transition text-white rounded-lg font-bold">Search</button>
+            </form>
+
+            <!-- Table -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
+                                <th class="px-6 py-4"><input type="checkbox" id="select-all" onclick="toggleAll(this)" /></th>
+                                <th class="px-6 py-4">EPIC</th>
+                                <th class="px-6 py-4">Name</th>
+                                <th class="px-6 py-4">Constituency</th>
+                                <th class="px-6 py-4">DOB</th>
+                                <th class="px-6 py-4">Verified</th>
+                                <th class="px-6 py-4">Voted</th>
+                                <th class="px-6 py-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="voters-table-body" class="divide-y divide-slate-100 text-sm">
+                            {% for voter in voters %}
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4"><input type="checkbox" class="voter-check" value="{{ voter.id }}"/></td>
+                                <td class="px-6 py-4 font-mono font-bold text-primary">{{ voter.epic_number }}</td>
+                                <td class="px-6 py-4 font-semibold">{{ voter.full_name }}</td>
+                                <td class="px-6 py-4 text-slate-500">{{ voter.constituency }}</td>
+                                <td class="px-6 py-4 text-slate-500">{{ voter.dob }}</td>
+                                <td class="px-6 py-4">
+                                    {% if voter.is_verified %}
+                                    <span class="px-2 py-0.5 rounded bg-green-100 text-green-700 font-bold text-[10px]">VERIFIED</span>
+                                    {% else %}
+                                    <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-400 font-bold text-[10px]">PENDING</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {% if voter.has_voted %}
+                                    <div class="flex flex-col">
+                                        <span class="text-indian-green font-bold flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-lg">check_circle</span> 
+                                            Voted
+                                        </span>
+                                    </div>
+                                    {% else %}
+                                    <span class="text-slate-400">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 text-slate-500 font-medium text-xs">
+                                    <button onclick="verifyVoter({{ voter.id }})" class="text-primary hover:underline">Verify</button>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="8" class="px-6 py-10 text-center text-slate-400 font-medium">No voters registered in the system yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-4 border-t border-slate-100 flex items-center justify-between text-xs font-medium text-slate-500 bg-slate-50">
+                    <p id="pagination-info">Page {{ pagination.page }} of {{ pagination.pages }} ({{ pagination.total }} total)</p>
+                    <div class="flex gap-2">
+                        {% if pagination.has_prev %}
+                        <a href="{{ url_for('admin.voters', page=pagination.prev_num, search=search) }}" class="px-3 py-1.5 rounded border border-slate-200 hover:bg-white text-slate-700 transition">Previous</a>
+                        {% endif %}
+                        {% if pagination.has_next %}
+                        <a href="{{ url_for('admin.voters', page=pagination.next_num, search=search) }}" class="px-3 py-1.5 rounded border border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 transition">Next</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleAll(el) {
+            document.querySelectorAll('.voter-check').forEach(c => c.checked = el.checked);
+        }
+
+        function verifyVoter(id) {
+            fetch(`/admin/api/verify-voter/${id}`, {method: 'POST'})
+                .then(r => r.json())
+                .then(data => {
+                    if(data.success) {
+                        alert(data.message);
+                        window.location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

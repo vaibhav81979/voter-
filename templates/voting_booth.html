@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Electronic Voting Booth — ECI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FF9933',
+            'indian-green': '#138808',
+            'indian-blue': '#000080'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --saffron:#FF6B00;--saffron-light:#FF9933;--navy:#002B7F;--navy-dark:#001A52;--navy-mid:#003A9E;
+      --green:#046A38;--green-light:#138808;--gold:#C8922A;--gold-light:#F0C040;
+      --cream:#FDF8F0;--white:#FFFFFF;--text:#1C1C2E;
+    }
+    body{font-family:'Noto Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;overflow-x:hidden;}
+    .tricolor{display:flex;height:6px;}
+    .tc-s{flex:1;background:var(--saffron-light);}
+    .tc-w{flex:1;background:#fff;}
+    .tc-g{flex:1;background:var(--green-light);}
+    .border-strip{height:3px;background:repeating-linear-gradient(90deg,var(--gold) 0px,var(--gold) 8px,transparent 8px,transparent 16px,var(--saffron-light) 16px,var(--saffron-light) 24px,transparent 24px,transparent 32px);}
+    .header{background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy) 60%,var(--navy-mid) 100%);padding:16px 32px;display:flex;align-items:center;gap:20px;}
+    .emblem-ring{width:60px;height:60px;border-radius:50%;border:2px solid rgba(240,192,64,0.6);background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;}
+    .header-txt h1{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:white;line-height:1.2;margin:0;}
+    .header-devanagari{font-size:14px;color:var(--gold-light);margin-top:2px;}
+    .header-txt p{font-size:12.5px;color:rgba(255,255,255,0.65);margin-top:4px;}
+    .footer{background:linear-gradient(135deg,var(--navy-dark),var(--navy));color:rgba(255,255,255,0.6);font-size:12px;padding:16px 32px;text-align:center;border-top:3px solid var(--saffron);margin-top:auto;}
+    .booth-card{transition:all 0.3s cubic-bezier(0.4,0,0.2,1);cursor:pointer;}
+    .booth-card:hover{transform:translateY(-4px);box-shadow:0 10px 25px -5px rgba(0,0,0,0.1),0 8px 10px -6px rgba(0,0,0,0.1);}
+    .booth-card.selected{border-color:var(--navy);background-color:#f0f4ff;}
+    .booth-card.selected .radio-circle{border-color:var(--navy);background-color:var(--navy);}
+    .booth-card.selected .radio-circle::after{content:'';width:8px;height:8px;background:white;border-radius:50%;display:block;}
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+<div class="tricolor"><div class="tc-s"></div><div class="tc-w"></div><div class="tc-g"></div></div>
+<header class="header">
+  <div class="emblem-ring">
+    <svg width="42" height="42" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="45" fill="none" stroke="#F0C040" stroke-width="6"/>
+      <circle cx="50" cy="50" r="34" fill="none" stroke="#F0C040" stroke-width="2"/>
+      <circle cx="50" cy="50" r="8" fill="#F0C040"/>
+      <g stroke="#F0C040" stroke-width="2"><line x1="50" y1="16" x2="50" y2="84"/><line x1="50" y1="16" x2="50" y2="84" transform="rotate(30 50 50)"/><line x1="50" y1="16" x2="50" y2="84" transform="rotate(60 50 50)"/><line x1="50" y1="16" x2="50" y2="84" transform="rotate(90 50 50)"/><line x1="50" y1="16" x2="50" y2="84" transform="rotate(120 50 50)"/><line x1="50" y1="16" x2="50" y2="84" transform="rotate(150 50 50)"/></g>
+    </svg>
+  </div>
+  <div class="header-txt">
+    <h1>Election Commission of India</h1>
+    <div class="header-devanagari">भारत निर्वाचन आयोग</div>
+    <p>Electronic Voting Portal &nbsp;·&nbsp; SECURE VOTING BOOTH</p>
+  </div>
+  <div class="ml-auto flex items-center gap-3 bg-red-600/20 border border-red-400/30 text-red-200 px-4 py-2 rounded-full">
+    <span class="w-2.5 h-2.5 rounded-full bg-red-400 animate-pulse"></span>
+    <span class="text-xs font-black uppercase tracking-widest">Live Secure Session</span>
+  </div>
+</header>
+<div class="border-strip"></div>
+
+<main class="flex-1 py-12 px-4 md:px-20 bg-slate-50">
+  <div class="max-w-4xl mx-auto">
+
+    <!-- Voter Info Banner -->
+    <div class="mb-8 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+      <span class="material-symbols-outlined text-primary text-3xl">how_to_vote</span>
+      <div>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Authenticated Voter</p>
+        <p class="font-black text-slate-800 text-lg">{{ voter.full_name }} &nbsp;<span class="text-sm font-semibold text-slate-400">({{ voter.epic_number }})</span></p>
+        <p class="text-xs text-slate-500 font-semibold">Constituency: {{ voter.constituency }}</p>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-200">
+      <div>
+        <h2 class="text-3xl font-black text-slate-900 tracking-tight">Cast Your Vote</h2>
+        <p class="text-slate-500 font-semibold uppercase tracking-widest text-xs mt-1">
+          {{ election.name if election else 'General Elections 2026' }} · Constituency: {{ voter.constituency }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Candidate Cards from DB -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="candidate-list">
+      {% for c in candidates %}
+      <div class="booth-card bg-white p-6 rounded-2xl border-2 border-slate-200 flex items-center gap-6"
+           onclick="selectCandidate(this, {{ c.id }}, '{{ c.party }}', '{{ c.name }}', '{{ c.symbol_icon or 'how_to_vote' }}')">
+        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-2xl text-primary">{{ c.symbol_icon or 'how_to_vote' }}</span>
+        </div>
+        <div class="flex-1">
+          <h3 class="text-lg font-black text-slate-800">{{ c.party }}</h3>
+          <p class="text-sm font-bold text-slate-500">{{ c.name }}</p>
+          {% if c.party_short %}
+          <span class="inline-block mt-1 px-2 py-0.5 bg-orange-100 text-orange-700 text-[11px] font-black rounded-full uppercase">{{ c.party_short }}</span>
+          {% endif %}
+        </div>
+        <div class="radio-circle w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center flex-shrink-0"></div>
+      </div>
+      {% else %}
+      <div class="col-span-2 text-center py-16 text-slate-400">
+        <span class="material-symbols-outlined text-6xl mb-4 block">ballot</span>
+        <p class="font-bold">No candidates available for your constituency.</p>
+        <p class="text-sm mt-1">Please contact the election office.</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="mt-12 flex flex-col items-center gap-6">
+      <button id="btn-cast-vote" disabled onclick="showConfirmation()"
+        class="w-full max-w-sm py-4 rounded-xl bg-gradient-to-r from-indian-blue to-blue-900 text-white font-black text-lg shadow-xl shadow-blue-900/20 hover:-translate-y-1 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:-translate-y-0">
+        PROCEED TO CAST VOTE
+      </button>
+      <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center px-8">
+        Your vote is encrypted via AES-256 and recorded on a tamper-proof blockchain. It cannot be traced back to your identity.
+      </p>
+    </div>
+  </div>
+</main>
+
+<!-- Confirmation Modal -->
+<div id="confirm-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200">
+    <div class="bg-indian-blue p-6 text-white text-center">
+      <span class="material-symbols-outlined text-4xl mb-2">how_to_reg</span>
+      <h4 class="text-xl font-black tracking-tight">Confirm Your Vote</h4>
+    </div>
+    <div class="p-8 space-y-6">
+      <div class="text-center space-y-2">
+        <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px]">You are voting for</p>
+        <div class="flex flex-col items-center gap-2">
+          <span class="material-symbols-outlined text-5xl text-primary" id="confirm-symbol"></span>
+          <h5 id="confirm-party" class="text-2xl font-black text-slate-900"></h5>
+          <p id="confirm-candidate" class="font-bold text-slate-500"></p>
+        </div>
+      </div>
+      <div class="bg-orange-50 p-4 rounded-xl border border-orange-100 flex items-start gap-3">
+        <span class="material-symbols-outlined text-primary">warning</span>
+        <p class="text-xs text-slate-700 font-medium leading-relaxed">This action is irreversible. Once cast, your vote will be recorded permanently in the blockchain ledger.</p>
+      </div>
+      <div class="flex gap-4">
+        <button onclick="hideConfirmation()" class="flex-1 py-4 rounded-xl border-2 border-slate-200 font-bold text-slate-500 hover:bg-slate-50 transition-colors">CANCEL</button>
+        <button id="btn-confirm" onclick="confirmVote()" class="flex-1 py-4 rounded-xl bg-indian-green text-white font-black hover:bg-green-700 shadow-lg shadow-green-500/20 transition-all">CONFIRM VOTE</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tricolor"><div class="tc-s"></div><div class="tc-w"></div><div class="tc-g"></div></div>
+<footer class="footer">&copy; 2026 Election Commission of India. All Rights Reserved.</footer>
+
+<script>
+  let selectedCandidateId = null;
+  let selectedParty = null;
+  let selectedCandidateName = null;
+  let selectedIcon = null;
+
+  function selectCandidate(element, candidateId, party, candidateName, icon) {
+    document.querySelectorAll('.booth-card').forEach(c => c.classList.remove('selected'));
+    element.classList.add('selected');
+    selectedCandidateId = candidateId;
+    selectedParty = party;
+    selectedCandidateName = candidateName;
+    selectedIcon = icon;
+    document.getElementById('btn-cast-vote').disabled = false;
+  }
+
+  function showConfirmation() {
+    document.getElementById('confirm-party').textContent = selectedParty;
+    document.getElementById('confirm-candidate').textContent = selectedCandidateName;
+    document.getElementById('confirm-symbol').textContent = selectedIcon;
+    document.getElementById('confirm-modal').classList.remove('hidden');
+  }
+
+  function hideConfirmation() {
+    document.getElementById('confirm-modal').classList.add('hidden');
+  }
+
+  async function confirmVote() {
+    const btn = document.getElementById('btn-confirm');
+    btn.disabled = true;
+    btn.textContent = 'Recording Vote...';
+
+    try {
+      const res = await fetch("{{ url_for('voter.api_cast_vote') }}", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ candidate_id: selectedCandidateId })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        window.location.href = data.redirect || "{{ url_for('voter.vote_success_page') }}";
+      } else {
+        alert(data.message || 'Vote could not be recorded. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'CONFIRM VOTE';
+        hideConfirmation();
+      }
+    } catch (err) {
+      alert('Network error. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'CONFIRM VOTE';
+    }
+  }
+</script>
+</body>
+</html>

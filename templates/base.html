@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>{% block title %}National E-Voting Portal{% endblock %} | Digital India</title>
+    <meta name="description" content="Secure digital voting platform by the Election Commission of India with face recognition and biometric verification.">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff9933",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23190f",
+                        "indian-green": "#138808",
+                        "indian-blue": "#000080"
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .flash-message { animation: slideDown 0.3s ease-out; }
+        @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 5px rgba(255,153,51,0.3); } 50% { box-shadow: 0 0 20px rgba(255,153,51,0.6); } }
+        .pulse-glow { animation: pulse-glow 2s infinite; }
+        @keyframes scan-line { 0% { top: 0; } 100% { top: 100%; } }
+        .scan-line { animation: scan-line 2s ease-in-out infinite; }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="fixed top-0 left-0 right-0 z-[100] flex flex-col items-center gap-2 p-4" id="flash-container">
+    {% for category, message in messages %}
+    <div class="flash-message max-w-lg w-full px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 cursor-pointer
+        {% if category == 'error' %}bg-red-50 border border-red-200 text-red-800
+        {% elif category == 'success' %}bg-green-50 border border-green-200 text-green-800
+        {% elif category == 'warning' %}bg-yellow-50 border border-yellow-200 text-yellow-800
+        {% else %}bg-blue-50 border border-blue-200 text-blue-800{% endif %}"
+        onclick="this.remove()">
+        <span class="material-symbols-outlined text-lg">
+            {% if category == 'error' %}error{% elif category == 'success' %}check_circle{% elif category == 'warning' %}warning{% else %}info{% endif %}
+        </span>
+        <span class="text-sm font-medium flex-1">{{ message }}</span>
+        <span class="material-symbols-outlined text-sm opacity-50">close</span>
+    </div>
+    {% endfor %}
+</div>
+<script>setTimeout(() => { const c = document.getElementById('flash-container'); if(c) c.style.display='none'; }, 8000);</script>
+{% endif %}
+{% endwith %}
+
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-6 md:px-20 py-4 bg-white dark:bg-slate-900 sticky top-0 z-50">
+    <a href="{{ url_for('voter.index') }}" class="flex items-center gap-3 no-underline">
+        <div class="text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-4xl">account_balance</span>
+        </div>
+        <div class="flex flex-col">
+            <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">National E-Voting Portal</h2>
+            <span class="text-[10px] uppercase tracking-widest text-indian-green font-bold">Government of India</span>
+        </div>
+    </a>
+    <div class="hidden lg:flex flex-1 justify-end gap-8 items-center">
+        <nav class="flex items-center gap-8">
+            <a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors" href="{{ url_for('voter.register') }}">Registration</a>
+            <a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors" href="{{ url_for('voter.login') }}">Voter Login</a>
+            <a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors" href="{{ url_for('admin.admin_login') }}">Admin</a>
+        </nav>
+        {% if session.get('voter_id') %}
+        <div class="flex items-center gap-3 border-l border-slate-200 dark:border-slate-700 pl-6">
+            <span class="text-xs font-bold text-indian-green">{{ session.get('voter_name', 'Voter') }}</span>
+            <a href="{{ url_for('voter.logout') }}" class="text-xs text-slate-500 hover:text-red-500">Logout</a>
+        </div>
+        {% elif session.get('admin_id') %}
+        <div class="flex items-center gap-3 border-l border-slate-200 dark:border-slate-700 pl-6">
+            <span class="text-xs font-bold text-primary">{{ session.get('admin_name', 'Admin') }}</span>
+            <a href="{{ url_for('admin.admin_logout') }}" class="text-xs text-slate-500 hover:text-red-500">Logout</a>
+        </div>
+        {% else %}
+        <a href="{{ url_for('voter.login') }}" class="flex min-w-[120px] cursor-pointer items-center justify-center rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold shadow-md hover:bg-primary/90 transition-all no-underline">
+            Vote Now
+        </a>
+        {% endif %}
+    </div>
+    <!-- Mobile Menu -->
+    <div class="lg:hidden flex items-center">
+        <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="p-2">
+            <span class="material-symbols-outlined text-2xl">menu</span>
+        </button>
+    </div>
+</header>
+
+<!-- Mobile Nav -->
+<div id="mobile-menu" class="hidden lg:hidden bg-white dark:bg-slate-900 border-b border-slate-200 px-6 py-4 space-y-3">
+    <a class="block text-slate-700 text-sm font-semibold py-2" href="{{ url_for('voter.register') }}">Registration</a>
+    <a class="block text-slate-700 text-sm font-semibold py-2" href="{{ url_for('voter.login') }}">Voter Login</a>
+    <a class="block text-slate-700 text-sm font-semibold py-2" href="{{ url_for('admin.admin_login') }}">Admin</a>
+    {% if session.get('voter_id') %}
+    <a class="block text-red-500 text-sm font-semibold py-2" href="{{ url_for('voter.logout') }}">Logout</a>
+    {% endif %}
+</div>
+
+{% block content %}{% endblock %}
+
+<!-- Footer -->
+{% block footer %}
+<footer class="bg-slate-900 text-white px-6 md:px-20 py-12 mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-10">
+        <div class="flex flex-col gap-4 max-w-sm">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">account_balance</span>
+                <span class="text-xl font-bold">National E-Voting Portal</span>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed">
+                An initiative by the Election Commission of India to digitize the democratic process, ensuring every voice counts from anywhere in the country.
+            </p>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-10 flex-1 justify-end">
+            <div class="flex flex-col gap-4">
+                <h4 class="font-bold text-slate-200">Resources</h4>
+                <nav class="flex flex-col gap-2 text-sm text-slate-400">
+                    <a class="hover:text-primary transition-colors" href="{{ url_for('voter.register') }}">New Registration</a>
+                    <a class="hover:text-primary transition-colors" href="{{ url_for('voter.epic_recovery') }}">Recover EPIC</a>
+                    <a class="hover:text-primary transition-colors" href="#">FAQs</a>
+                </nav>
+            </div>
+            <div class="flex flex-col gap-4">
+                <h4 class="font-bold text-slate-200">Legal</h4>
+                <nav class="flex flex-col gap-2 text-sm text-slate-400">
+                    <a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+                    <a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+                    <a class="hover:text-primary transition-colors" href="#">Data Protection</a>
+                </nav>
+            </div>
+            <div class="flex flex-col gap-4">
+                <h4 class="font-bold text-slate-200">Contact</h4>
+                <p class="text-sm text-slate-400">
+                    Toll Free: 1950<br/>
+                    Nirvachan Sadan, Ashoka Road<br/>
+                    New Delhi, 110001
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <p>&copy; 2024 Election Commission of India. All Rights Reserved.</p>
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2">
+                <div class="w-4 h-3 bg-primary"></div>
+                <div class="w-4 h-3 bg-white"></div>
+                <div class="w-4 h-3 bg-indian-green"></div>
+            </div>
+            <p>Digital India Initiative</p>
+        </div>
+    </div>
+</footer>
+{% endblock %}
+
+</div>
+</div>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>System Settings | Admin Portal</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <div class="tricolor">
+        <div class="tc-s"></div>
+        <div class="tc-w"></div>
+        <div class="tc-g"></div>
+    </div>
+
+    <header class="header">
+        <div class="emblem-ring">
+            <svg width="42" height="42" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#F0C040" stroke-width="6" />
+                <circle cx="50" cy="50" r="34" fill="none" stroke="#F0C040" stroke-width="2" />
+                <circle cx="50" cy="50" r="8" fill="#F0C040" />
+                <g stroke="#F0C040" stroke-width="2">
+                    <line x1="50" y1="16" x2="50" y2="84" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(15 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(30 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(45 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(60 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(75 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(90 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(105 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(120 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(135 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(150 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(165 50 50)" />
+                </g>
+            </svg>
+        </div>
+        <div class="header-txt">
+            <h1>Election Commission of India</h1>
+            <div class="header-devanagari">भारत निर्वाचन आयोग</div>
+            <p>Electronic Voting Portal &nbsp;·&nbsp; General Elections 2026</p>
+        </div>
+        <div style="margin-left:auto; display:flex; gap:20px; align-items:center;">
+             <span class="text-xs font-bold text-white/80 uppercase tracking-widest border border-white/20 rounded-xl px-4 py-1">Chief Electoral Officer</span>
+             <a href="{{ url_for('admin.admin_logout') }}" class="text-sm text-white/70 hover:text-white font-bold transition-colors">Logout ⏏</a>
+        </div>
+    </header>
+
+    <div class="border-strip"></div>
+
+    <nav class="nav-ribbon">
+        <a href="{{ url_for('voter.welcome') }}">🌐 Language</a>
+        <a href="{{ url_for('voter.home') }}">🏠 Home</a>
+        <a href="{{ url_for('voter.login') }}">🗳️ Voter Login</a>
+        <a href="{{ url_for('voter.register') }}">📝 Register to Vote</a>
+        <a href="{{ url_for('voter.booth') }}">📍 Find Your Booth</a>
+        <a href="{{ url_for('voter.candidate') }}">👤 Candidate Info</a>
+        <a href="{{ url_for('voter.results') }}">📊 Results</a>
+        <a href="{{ url_for('voter.help_page') }}">❓ Help & Support</a>
+        <a href="{{ url_for('admin.dashboard') }}" class="active" style="margin-left:auto;">🔐 Admin Portal</a>
+    </nav>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="hidden lg:flex w-64 flex-col border-r border-slate-200 bg-white p-4 gap-2 h-full shadow-sm z-10">
+            <nav class="flex flex-col gap-1">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.dashboard') }}">
+                    <span class="material-symbols-outlined">dashboard</span> Dashboard
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.voters') }}">
+                    <span class="material-symbols-outlined">group</span> Voters Database
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.fraud_alerts') }}">
+                    <span class="material-symbols-outlined">security</span> Security Logs
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-orange-50 text-primary font-bold transition-colors cursor-pointer" href="{{ url_for('admin.settings') }}">
+                    <span class="material-symbols-outlined">settings</span> Settings
+                </a>
+            </nav>
+            <div class="mt-auto p-5 rounded-xl bg-slate-900 text-white relative overflow-hidden shadow-lg border border-slate-800">
+                <div class="relative z-10">
+                    <p class="text-[10px] font-black text-primary mb-1 tracking-widest">ACTIVE ELECTION</p>
+                    <p class="text-sm font-bold opacity-90 leading-tight">General Elections 2026 Phase III</p>
+                    <div class="mt-4 h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                        <div class="h-full bg-primary w-[65%] shadow-[0_0_10px_rgba(255,153,51,0.5)]"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto p-4 lg:p-8 bg-slate-50">
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900">System Configuration</h1>
+                    <p class="text-sm text-slate-500">Manage global election settings, biometric thresholds, and security parameters.</p>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="p-4 rounded-xl border font-bold text-sm {% if category == 'success' %}bg-green-50 border-green-200 text-green-700{% else %}bg-amber-50 border-amber-200 text-amber-700{% endif %}">
+                        {{ message }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <form action="{{ url_for('admin.save_settings') }}" method="POST" class="space-y-6">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    
+                    <!-- Election Phase -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">how_to_vote</span> Election Phase
+                        </h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Current Active Phase</label>
+                                <select name="phase" class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary shadow-sm h-12">
+                                    <option value="1">Phase I (Completed)</option>
+                                    <option value="2">Phase II (Completed)</option>
+                                    <option value="3" selected>Phase III (Active - Live Voting)</option>
+                                    <option value="4">Phase IV (Upcoming)</option>
+                                    <option value="0">Voting Paused / Suspended</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security & AI Parameters -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">robot_2</span> AI Fraud Detection Engine
+                        </h2>
+                        <div class="space-y-5">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm font-bold text-slate-700">Facial Recognition Strictness</h3>
+                                    <p class="text-xs text-slate-500">Tolerance level for biometric encodings distance.</p>
+                                </div>
+                                <select name="face_tolerance" class="rounded-lg border-slate-300 focus:border-primary focus:ring-primary shadow-sm">
+                                    <option value="0.6">Low (0.60 distance)</option>
+                                    <option value="0.5" selected>Standard (0.50 distance)</option>
+                                    <option value="0.4">High Strictness (0.40 distance)</option>
+                                </select>
+                            </div>
+                            <hr class="border-slate-100">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm font-bold text-slate-700">Liveness Anti-Spoofing</h3>
+                                    <p class="text-xs text-slate-500">Require blinks or head movement during face capture.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                  <input type="checkbox" name="liveness" value="true" class="sr-only peer" checked>
+                                  <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                                </label>
+                            </div>
+                            <hr class="border-slate-100">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm font-bold text-slate-700">IP Velocity & Geolocation Monitor</h3>
+                                    <p class="text-xs text-slate-500">Flag multiple votes from the same IP address quickly.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                  <input type="checkbox" name="velocity" value="true" class="sr-only peer" checked>
+                                  <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Blockchain Settings -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">link</span> Distributed Ledger / Blockchain
+                        </h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Proof-of-Work Difficulty</label>
+                                <p class="text-xs text-slate-500 mb-2">Higher numbers exponentially increase calculation time to cast votes.</p>
+                                <select name="pow_difficulty" class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary shadow-sm h-12">
+                                    <option value="1">Level 1 (Very Fast)</option>
+                                    <option value="2" selected>Level 2 (Standard)</option>
+                                    <option value="3">Level 3 (High Security - Slow)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-3 pt-4">
+                        <button type="button" class="px-6 py-3 rounded-lg font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-colors">Discard Changes</button>
+                        <button type="submit" class="px-6 py-3 rounded-lg font-bold text-white bg-primary hover:bg-orange-600 shadow-lg transition-colors">Save Configuration</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

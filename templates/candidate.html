@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Candidate Info — E-Voting Portal</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { primary: '#FF9933', 'indian-green': '#138808', 'indian-blue': '#000080' } } }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+</head>
+<body class="flex flex-col min-h-screen bg-slate-50">
+  <div style="display:flex;height:6px;">
+    <div style="flex:1;background:#FF9933;"></div><div style="flex:1;background:#fff;"></div><div style="flex:1;background:#138808;"></div>
+  </div>
+  <header style="background:linear-gradient(135deg,#001A52,#002B7F,#003A9E);padding:16px 32px;display:flex;align-items:center;gap:20px;">
+    <div style="width:60px;height:60px;border-radius:50%;border:2px solid rgba(240,192,64,0.6);background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;">
+      <svg width="32" height="32" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="#F0C040" stroke-width="6"/><circle cx="50" cy="50" r="8" fill="#F0C040"/></svg>
+    </div>
+    <div>
+      <h1 style="font-size:20px;font-weight:700;color:white;margin:0;">Election Commission of India</h1>
+      <div style="font-size:13px;color:#F0C040;">भारत निर्वाचन आयोग</div>
+    </div>
+  </header>
+  <nav style="background:linear-gradient(90deg,#001A52,#002B7F);display:flex;border-bottom:2px solid #FF6B00;">
+    <a href="{{ url_for('voter.home') }}" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:12px 20px;font-size:13px;font-weight:600;">🏠 Home</a>
+    <a href="{{ url_for('voter.login') }}" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:12px 20px;font-size:13px;font-weight:600;">🗳️ Voter Login</a>
+    <a href="{{ url_for('voter.candidate') }}" style="color:white;background:rgba(255,107,0,0.18);text-decoration:none;padding:12px 20px;font-size:13px;font-weight:600;">👤 Candidate Info</a>
+    <a href="{{ url_for('voter.results') }}" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:12px 20px;font-size:13px;font-weight:600;">📊 Results</a>
+  </nav>
+
+  <main class="flex-1 py-12 px-4 max-w-4xl mx-auto w-full">
+    <div class="text-center mb-10">
+      <h1 class="text-3xl font-black text-slate-900 mb-3">Know Your Candidates</h1>
+      {% if election %}
+      <p class="text-sm text-slate-600 font-medium">{{ election.name }}</p>
+      {% else %}
+      <p class="text-sm text-slate-600">No active election at this time.</p>
+      {% endif %}
+    </div>
+
+    {% if candidates %}
+    <!-- Group candidates by constituency using a set trick -->
+    {% set constituencies = [] %}
+    {% for c in candidates %}{% if c.constituency not in constituencies %}{% set _ = constituencies.append(c.constituency) %}{% endif %}{% endfor %}
+
+    {% for const in constituencies %}
+    <div class="mb-8 bg-white rounded-2xl shadow border border-slate-200 overflow-hidden">
+      <div class="bg-gradient-to-r from-indian-blue to-blue-800 px-6 py-4">
+        <h2 class="text-white font-bold text-lg flex items-center gap-2">
+          <span class="material-symbols-outlined">location_city</span> {{ const }} Constituency
+        </h2>
+      </div>
+      <div class="divide-y divide-slate-100">
+        {% for candidate in candidates if candidate.constituency == const %}
+        <div class="flex flex-col p-5 hover:bg-slate-50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-2xl text-primary">{{ candidate.symbol_icon or 'person' }}</span>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-base font-bold text-slate-900">{{ candidate.name }}</h3>
+              <p class="text-sm text-slate-500 font-semibold">{{ candidate.party }}</p>
+              <span class="inline-block mt-1 px-2 py-0.5 bg-orange-100 text-orange-700 text-[11px] font-black rounded-full uppercase tracking-wider">{{ candidate.party_short }}</span>
+            </div>
+          </div>
+          {% if candidate.details %}
+          <div class="mt-4 pt-3 border-t border-slate-100 text-sm text-slate-600 leading-relaxed">
+            {{ candidate.details }}
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+
+    {% else %}
+    <div class="text-center py-20 text-slate-400">
+      <span class="material-symbols-outlined text-6xl mb-4 block">ballot</span>
+      <p class="font-semibold">No candidate data available at this time.</p>
+    </div>
+    {% endif %}
+  </main>
+</body>
+</html>

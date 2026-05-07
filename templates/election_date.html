@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Election Dates — E-Voting Portal</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+</head>
+<body class="bg-slate-50 font-sans">
+  <main class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="mb-12 text-center">
+      <span class="inline-block px-3 py-1 bg-orange-100 text-orange-700 text-xs font-black rounded-full mb-4 tracking-widest uppercase">Election Schedule</span>
+      <h1 class="text-4xl font-black text-slate-900 mb-4 tracking-tight">General Elections 2026 Phases</h1>
+      <p class="text-slate-600 font-medium">Detailed schedule for polling across all constituencies in India.</p>
+    </div>
+
+    <div class="grid gap-6">
+      <!-- Phase I -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex items-center justify-between hover:shadow-md transition-shadow">
+        <div class="flex items-center gap-6">
+          <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex flex-col items-center justify-center font-black">
+            <span class="text-xs uppercase opacity-70">APR</span>
+            <span class="text-2xl leading-none">19</span>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-900 text-lg">Phase I</h3>
+            <p class="text-sm text-slate-500">102 Constituencies | 21 States/UTs</p>
+          </div>
+        </div>
+        <span class="px-4 py-1.5 bg-green-100 text-green-700 text-sm font-bold rounded-xl">Ongoing</span>
+      </div>
+
+      <!-- Phase II -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex items-center justify-between hover:shadow-md transition-shadow">
+        <div class="flex items-center gap-6">
+          <div class="w-16 h-16 bg-slate-50 text-slate-400 rounded-2xl flex flex-col items-center justify-center font-black">
+            <span class="text-xs uppercase opacity-70">APR</span>
+            <span class="text-2xl leading-none">26</span>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-900 text-lg">Phase II</h3>
+            <p class="text-sm text-slate-500">89 Constituencies | 13 States/UTs</p>
+          </div>
+        </div>
+        <span class="px-4 py-1.5 bg-slate-100 text-slate-500 text-sm font-bold rounded-xl">Upcoming</span>
+      </div>
+
+      <!-- Phase III -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex items-center justify-between hover:shadow-md transition-shadow opacity-70">
+        <div class="flex items-center gap-6">
+          <div class="w-16 h-16 bg-slate-50 text-slate-400 rounded-2xl flex flex-col items-center justify-center font-black">
+            <span class="text-xs uppercase opacity-70">MAY</span>
+            <span class="text-2xl leading-none">07</span>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-900 text-lg">Phase III</h3>
+            <p class="text-sm text-slate-500">94 Constituencies | 12 States/UTs</p>
+          </div>
+        </div>
+        <span class="px-4 py-1.5 bg-slate-100 text-slate-500 text-sm font-bold rounded-xl">Upcoming</span>
+      </div>
+
+      <!-- Result Day -->
+      <div class="mt-8 bg-slate-900 rounded-2xl p-8 text-white relative overflow-hidden">
+        <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div>
+            <h2 class="text-2xl font-black mb-2 tracking-tight">Counting & Results Day</h2>
+            <p class="text-slate-400 text-sm">Official announcement of the 19th Lok Sabha results.</p>
+          </div>
+          <div class="text-center sm:text-right">
+            <div class="text-orange-400 text-sm font-black uppercase tracking-widest mb-1">Declaration Date</div>
+            <div class="text-3xl font-black">04 June, 2026</div>
+          </div>
+        </div>
+        <div class="absolute -right-20 -top-20 w-64 h-64 bg-slate-800 rounded-full blur-3xl opacity-50"></div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

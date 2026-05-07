@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Election Results — E-Voting Portal</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { primary: '#FF9933', 'indian-green': '#138808', 'indian-blue': '#000080' } } }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+</head>
+<body class="flex flex-col min-h-screen bg-slate-50">
+  <div style="display:flex;height:6px;">
+    <div style="flex:1;background:#FF9933;"></div><div style="flex:1;background:#fff;"></div><div style="flex:1;background:#138808;"></div>
+  </div>
+  <header style="background:linear-gradient(135deg,#001A52,#002B7F,#003A9E);padding:16px 32px;display:flex;align-items:center;gap:20px;">
+    <div style="width:60px;height:60px;border-radius:50%;border:2px solid rgba(240,192,64,0.6);background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;">
+      <svg width="32" height="32" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="#F0C040" stroke-width="6"/><circle cx="50" cy="50" r="8" fill="#F0C040"/></svg>
+    </div>
+    <div>
+      <h1 style="font-size:20px;font-weight:700;color:white;margin:0;">Election Commission of India</h1>
+      <div style="font-size:13px;color:#F0C040;">भारत निर्वाचन आयोग</div>
+    </div>
+  </header>
+  <nav style="background:linear-gradient(90deg,#001A52,#002B7F);display:flex;border-bottom:2px solid #FF6B00;">
+    <a href="{{ url_for('voter.home') }}" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:12px 20px;font-size:13px;font-weight:600;">🏠 Home</a>
+    <a href="{{ url_for('voter.login') }}" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:12px 20px;font-size:13px;font-weight:600;">🗳️ Voter Login</a>
+    <a href="{{ url_for('voter.candidate') }}" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:12px 20px;font-size:13px;font-weight:600;">👤 Candidate Info</a>
+    <a href="{{ url_for('voter.results') }}" style="color:white;background:rgba(255,107,0,0.18);text-decoration:none;padding:12px 20px;font-size:13px;font-weight:600;">📊 Results</a>
+  </nav>
+
+  <main class="flex-1 py-12 px-4 max-w-3xl mx-auto w-full">
+    <div class="text-center mb-10">
+      <h1 class="text-3xl font-black text-slate-900 mb-3">📊 Election Results</h1>
+      {% if election %}
+      <p class="text-sm text-slate-600 font-medium">{{ election.name }}</p>
+      {% endif %}
+    </div>
+
+    {% if candidates and total_votes > 0 %}
+    <!-- Winner card -->
+    {% set winner = candidates[0] %}
+    <div class="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-2xl p-6 mb-8 shadow-lg">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="text-2xl">🏆</span>
+        <span class="text-xs font-black text-yellow-700 uppercase tracking-widest">Leading Candidate</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 rounded-full bg-orange-200 flex items-center justify-center">
+          <span class="material-symbols-outlined text-3xl text-primary">{{ winner.symbol_icon or 'person' }}</span>
+        </div>
+        <div class="flex-1">
+          <h2 class="text-xl font-black text-slate-900">{{ winner.name }}</h2>
+          <p class="text-slate-600 font-semibold">{{ winner.party }} ({{ winner.party_short }})</p>
+          <p class="text-xs text-slate-400">{{ winner.constituency }}</p>
+        </div>
+        <div class="text-right">
+          <div class="text-3xl font-black text-primary">{{ '{:,}'.format(winner.votes_count or 0) }}</div>
+          <div class="text-sm font-bold text-slate-500">
+            {{ ((winner.votes_count or 0) / total_votes * 100)|round(1) }}% of votes
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results table -->
+    <div class="bg-white rounded-2xl shadow border border-slate-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">All Candidates</h3>
+        <span class="text-xs font-semibold text-slate-400">Total Votes: {{ '{:,}'.format(total_votes) }}</span>
+      </div>
+      <div class="divide-y divide-slate-100">
+        {% for i, candidate in candidates|enumerate %}
+        {% set pct = ((candidate.votes_count or 0) / total_votes * 100)|round(1) %}
+        <div class="p-5">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="text-lg font-black text-slate-400 w-6">{{ loop.index }}</span>
+            <span class="material-symbols-outlined text-xl text-primary">{{ candidate.symbol_icon or 'person' }}</span>
+            <div class="flex-1">
+              <div class="font-bold text-slate-900">{{ candidate.name }}</div>
+              <div class="text-xs text-slate-500">{{ candidate.party }} · {{ candidate.constituency }}</div>
+            </div>
+            <div class="text-right">
+              <div class="font-black text-slate-900">{{ '{:,}'.format(candidate.votes_count or 0) }}</div>
+              <div class="text-xs font-bold text-slate-400">{{ pct }}%</div>
+            </div>
+          </div>
+          <div class="h-2 bg-slate-100 rounded-full overflow-hidden ml-9">
+            <div class="h-full rounded-full transition-all {% if loop.index == 1 %}bg-primary{% else %}bg-slate-300{% endif %}"
+                 style="width: {{ pct }}%"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% else %}
+    <!-- No results yet -->
+    <div class="w-full max-w-[480px] mx-auto bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="h-2 w-full flex">
+        <div class="flex-1 bg-primary"></div><div class="flex-1 bg-white"></div><div class="flex-1 bg-indian-green"></div>
+      </div>
+      <div class="p-12 text-center">
+        <div class="w-24 h-24 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-6">
+          <span class="material-symbols-outlined text-4xl text-primary">lock_clock</span>
+        </div>
+        <h2 class="text-xl font-bold text-slate-900 mb-2">Results Not Yet Available</h2>
+        <p class="text-sm text-slate-500 leading-relaxed mb-6">
+          The counting of votes will commence strictly after the completion of the polling schedule. Please await the official ECI declaration.
+        </p>
+        <div class="bg-blue-50 text-indian-blue text-xs font-bold px-4 py-3 rounded-xl border border-blue-100 flex items-center gap-3">
+          <span class="material-symbols-outlined text-xl">info</span>
+          <div class="text-left">
+            <span class="block text-slate-700 font-black mb-1">Expected Declaration Date</span>
+            2nd May, 2026 - 10:00 AM IST
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </main>
+</body>
+</html>

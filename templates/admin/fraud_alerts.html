@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Fraud Alerts | E-Voting Portal</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <div class="tricolor">
+        <div class="tc-s"></div>
+        <div class="tc-w"></div>
+        <div class="tc-g"></div>
+    </div>
+
+    <header class="header">
+        <div class="emblem-ring">
+            <svg width="42" height="42" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#F0C040" stroke-width="6" />
+                <circle cx="50" cy="50" r="34" fill="none" stroke="#F0C040" stroke-width="2" />
+                <circle cx="50" cy="50" r="8" fill="#F0C040" />
+                <g stroke="#F0C040" stroke-width="2">
+                    <line x1="50" y1="16" x2="50" y2="84" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(15 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(30 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(45 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(60 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(75 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(90 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(105 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(120 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(135 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(150 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(165 50 50)" />
+                </g>
+            </svg>
+        </div>
+        <div class="header-txt">
+            <h1>Election Commission of India</h1>
+            <div class="header-devanagari">भारत निर्वाचन आयोग</div>
+            <p>Electronic Voting Portal &nbsp;·&nbsp; General Elections 2026</p>
+        </div>
+        <div style="margin-left:auto; display:flex; gap:20px; align-items:center;">
+             <span class="text-xs font-bold text-white/80 uppercase tracking-widest border border-white/20 rounded-xl px-4 py-1">Chief Electoral Officer</span>
+             <a href="{{ url_for('admin.admin_logout') }}" class="text-sm text-white/70 hover:text-white font-bold transition-colors">Logout ⏏</a>
+        </div>
+    </header>
+
+    <div class="border-strip"></div>
+
+    <nav class="nav-ribbon">
+        <a href="{{ url_for('voter.welcome') }}">🌐 Language</a>
+        <a href="{{ url_for('voter.home') }}">🏠 Home</a>
+        <a href="{{ url_for('voter.login') }}">🗳️ Voter Login</a>
+        <a href="{{ url_for('voter.register') }}">📝 Register to Vote</a>
+        <a href="{{ url_for('voter.booth') }}">📍 Find Your Booth</a>
+        <a href="{{ url_for('voter.candidate') }}">👤 Candidate Info</a>
+        <a href="{{ url_for('voter.results') }}">📊 Results</a>
+        <a href="{{ url_for('voter.help_page') }}">❓ Help & Support</a>
+        <a href="{{ url_for('admin.dashboard') }}" class="active" style="margin-left:auto;">🔐 Admin Portal</a>
+    </nav>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="hidden lg:flex w-64 flex-col border-r border-slate-200 bg-white p-4 gap-2 h-full shadow-sm z-10">
+            <nav class="flex flex-col gap-1">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.dashboard') }}">
+                    <span class="material-symbols-outlined">dashboard</span> Dashboard
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.voters') }}">
+                    <span class="material-symbols-outlined">group</span> Voters Database
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-orange-50 text-primary font-bold transition-colors" href="{{ url_for('admin.fraud_alerts') }}">
+                    <span class="material-symbols-outlined">security</span> Security Logs
+                    <span class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">2</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.manage_candidates') }}">
+                    <span class="material-symbols-outlined">how_to_vote</span> Candidates
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.settings') }}">
+                    <span class="material-symbols-outlined">settings</span> Settings
+                </a>
+            </nav>
+            <div class="mt-auto p-5 rounded-xl bg-slate-900 text-white relative overflow-hidden shadow-lg border border-slate-800">
+                <div class="relative z-10">
+                    <p class="text-[10px] font-black text-primary mb-1 tracking-widest">ACTIVE ELECTION</p>
+                    <p class="text-sm font-bold opacity-90 leading-tight">General Elections 2026 Phase III</p>
+                    <div class="mt-4 h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                        <div class="h-full bg-primary w-[65%] shadow-[0_0_10px_rgba(255,153,51,0.5)]"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6 bg-slate-50">
+            <div>
+                <h1 class="text-2xl font-bold">Security &amp; Fraud Alerts</h1>
+                <p class="text-sm text-slate-500">Monitor and resolve suspicious activities across all constituencies</p>
+            </div>
+
+            <!-- Summary cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-4 rounded-xl border-l-4 border-l-rose-500 border border-slate-200 shadow-sm">
+                    <p class="text-xs font-bold text-rose-500 uppercase tracking-widest">Critical Alert</p>
+                    <p class="text-3xl font-black text-slate-800 mt-1">{{ critical_count }}</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border-l-4 border-l-orange-500 border border-slate-200 shadow-sm">
+                    <p class="text-xs font-bold text-orange-500 uppercase tracking-widest">High Risk</p>
+                    <p class="text-3xl font-black text-slate-800 mt-1">{{ high_risk_count }}</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border-l-4 border-l-slate-400 border border-slate-200 shadow-sm">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Unresolved</p>
+                    <p class="text-3xl font-black text-slate-800 mt-1">{{ total_unresolved }}</p>
+                </div>
+            </div>
+
+            <!-- Alert list -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mt-6">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
+                                <th class="px-6 py-4">Timestamp</th>
+                                <th class="px-6 py-4">Alert Type</th>
+                                <th class="px-6 py-4">Constituency</th>
+                                <th class="px-6 py-4">Detail</th>
+                                <th class="px-6 py-4">Risk</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="alerts-table-body" class="divide-y divide-slate-100 text-sm">
+                            {% for alert in alerts %}
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4 text-slate-500 font-mono text-xs">{{ alert.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td class="px-6 py-4 font-bold text-slate-700">{{ alert.alert_type }}</td>
+                                <td class="px-6 py-4 text-slate-600 font-semibold">{{ alert.constituency }}</td>
+                                <td class="px-6 py-4 text-slate-500 max-w-xs truncate">{{ alert.detail }}</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-0.5 rounded {% if alert.risk_level == 'high' %}bg-rose-100 text-rose-700{% else %}bg-orange-100 text-orange-700{% endif %} font-black text-[10px] uppercase">{{ alert.risk_level }}</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    {% if alert.is_resolved %}
+                                    <span class="text-green-600 text-xs font-bold flex items-center gap-1"><span class="material-symbols-outlined text-sm">check_circle</span> Resolved</span>
+                                    {% else %}
+                                    <span class="text-amber-600 text-xs font-bold flex items-center gap-1"><span class="material-symbols-outlined text-sm">pending</span> Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {% if not alert.is_resolved %}
+                                    <button onclick="resolveAlert({{ alert.id }})" class="text-xs font-bold text-primary hover:underline">Resolve</button>
+                                    {% else %}
+                                    <span class="text-slate-400">—</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="7" class="px-6 py-10 text-center text-slate-400 font-medium">All systems normal. No active alerts.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function resolveAlert(id) {
+            if (!confirm('Mark this alert as resolved?')) return;
+            fetch(`/admin/api/resolve-alert/${id}`, {method: 'POST'})
+                .then(r => r.json())
+                .then(data => {
+                    if(data.success) {
+                        alert(data.message);
+                        window.location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin Dashboard | E-Voting Portal</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <div class="tricolor">
+        <div class="tc-s"></div>
+        <div class="tc-w"></div>
+        <div class="tc-g"></div>
+    </div>
+
+    <header class="header">
+        <div class="emblem-ring">
+            <svg width="42" height="42" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#F0C040" stroke-width="6" />
+                <circle cx="50" cy="50" r="34" fill="none" stroke="#F0C040" stroke-width="2" />
+                <circle cx="50" cy="50" r="8" fill="#F0C040" />
+                <g stroke="#F0C040" stroke-width="2">
+                    <line x1="50" y1="16" x2="50" y2="84" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(15 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(30 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(45 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(60 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(75 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(90 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(105 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(120 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(135 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(150 50 50)" />
+                    <line x1="50" y1="16" x2="50" y2="84" transform="rotate(165 50 50)" />
+                </g>
+            </svg>
+        </div>
+        <div class="header-txt">
+            <h1>Election Commission of India</h1>
+            <div class="header-devanagari">भारत निर्वाचन आयोग</div>
+            <p>Electronic Voting Portal &nbsp;·&nbsp; General Elections 2026</p>
+        </div>
+        <div style="margin-left:auto; display:flex; gap:20px; align-items:center;">
+             <span class="text-xs font-bold text-white/80 uppercase tracking-widest border border-white/20 rounded-xl px-4 py-1">{{ session.get('admin_name', 'Admin') }}</span>
+             <a href="{{ url_for('admin.admin_logout') }}" class="text-sm text-white/70 hover:text-white font-bold transition-colors">Logout ⏏</a>
+        </div>
+    </header>
+
+    <div class="border-strip"></div>
+
+    <nav class="nav-ribbon">
+        <a href="{{ url_for('voter.welcome') }}">🌐 Language</a>
+        <a href="{{ url_for('voter.home') }}">🏠 Home</a>
+        <a href="{{ url_for('voter.login') }}">🗳️ Voter Login</a>
+        <a href="{{ url_for('voter.register') }}">📝 Register to Vote</a>
+        <a href="{{ url_for('voter.booth') }}">📍 Find Your Booth</a>
+        <a href="{{ url_for('voter.candidate') }}">👤 Candidate Info</a>
+        <a href="{{ url_for('voter.results') }}">📊 Results</a>
+        <a href="{{ url_for('voter.help_page') }}">❓ Help & Support</a>
+        <a href="{{ url_for('admin.dashboard') }}" class="active" style="margin-left:auto;">🔐 Admin Portal</a>
+    </nav>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="hidden lg:flex w-64 flex-col border-r border-slate-200 bg-white p-4 gap-2 h-full shadow-sm z-10">
+            <nav class="flex flex-col gap-1">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-orange-50 text-primary font-bold transition-colors" href="{{ url_for('admin.dashboard') }}">
+                    <span class="material-symbols-outlined">dashboard</span> Dashboard
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.voters') }}">
+                    <span class="material-symbols-outlined">group</span> Voters Database
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.fraud_alerts') }}">
+                    <span class="material-symbols-outlined">security</span> Security Logs
+                    {% if stats.unresolved_alerts > 0 %}
+                    <span class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">{{ stats.unresolved_alerts }}</span>
+                    {% endif %}
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.manage_candidates') }}">
+                    <span class="material-symbols-outlined">how_to_vote</span> Candidates
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-600 font-semibold transition-colors cursor-pointer" href="{{ url_for('admin.settings') }}">
+                    <span class="material-symbols-outlined">settings</span> Settings
+                </a>
+            </nav>
+            <div class="mt-auto p-5 rounded-xl bg-slate-900 text-white relative overflow-hidden shadow-lg border border-slate-800">
+                <div class="relative z-10">
+                    <p class="text-[10px] font-black text-primary mb-1 tracking-widest">ACTIVE ELECTION</p>
+                    <p class="text-sm font-bold opacity-90 leading-tight">General Elections 2026 Phase III</p>
+                    <div class="mt-4 h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                        <div class="h-full bg-primary w-[65%] shadow-[0_0_10px_rgba(255,153,51,0.5)]"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-8 bg-slate-50">
+            
+            <div class="flex justify-between items-end">
+               <div>
+                  <h1 class="text-2xl font-black text-slate-900 tracking-tight">Overview Dashboard</h1>
+                  <p class="text-sm text-slate-500 font-medium">Real-time statistics and voting metrics</p>
+               </div>
+               <button onclick="window.location.reload()" class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 shadow-sm flex gap-2 items-center hover:bg-slate-50 transition-colors">
+                  <span class="material-symbols-outlined text-lg">refresh</span> Refresh Data
+               </button>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm transition-transform hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="p-2.5 bg-blue-50 text-blue-600 rounded-xl material-symbols-outlined">how_to_reg</span>
+                    </div>
+                    <p class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">Total Registered</p>
+                    <h3 id="stat-registered" class="text-3xl font-black text-slate-900">{{ stats.total_voters }}</h3>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm transition-transform hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="p-2.5 bg-orange-50 text-primary rounded-xl material-symbols-outlined">ballot</span>
+                    </div>
+                    <p class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">Votes Cast</p>
+                    <h3 id="stat-voted" class="text-3xl font-black text-slate-900">{{ stats.total_votes }}</h3>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm transition-transform hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="p-2.5 bg-green-50 text-indian-green rounded-xl material-symbols-outlined">trending_up</span>
+                    </div>
+                    <p class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">Voter Turnout</p>
+                    <h3 id="stat-turnout" class="text-3xl font-black text-slate-900">{{ stats.turnout }}%</h3>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-rose-200 shadow-sm transition-transform hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="p-2.5 bg-rose-50 text-rose-600 rounded-xl material-symbols-outlined">warning</span>
+                    </div>
+                    <p class="text-rose-500 text-xs font-bold uppercase tracking-widest mb-1">Security Alerts</p>
+                    <h3 class="text-3xl font-black text-rose-600">{{ stats.unresolved_alerts }}</h3>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+               <!-- Candidate Performance -->
+               <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 lg:p-8">
+                   <div class="flex justify-between items-center mb-8 border-b pb-4">
+                       <h3 class="text-lg font-black text-slate-900">Live Vote Share</h3>
+                       <span class="flex items-center gap-1.5 text-[10px] font-black text-indian-green tracking-widest px-2 py-1 bg-green-50 rounded-md">
+                           <span class="material-symbols-outlined text-sm font-bold">radio_button_checked</span> LIVE
+                       </span>
+                   </div>
+                   <div id="vote-share-container" class="space-y-6">
+                       {% if candidates %}
+                           {% set total_votes = stats.total_votes %}
+                           {% for candidate in candidates %}
+                           {% set percent = (candidate.votes_count / total_votes * 100)|round(1) if total_votes > 0 else 0 %}
+                           <div class="mb-4 space-y-2">
+                               <div class="flex justify-between text-sm font-bold">
+                                   <span class="text-slate-800">{{ candidate.name }} ({{ candidate.party_short }})</span>
+                                   <span class="text-primary">{{ percent }}%</span>
+                               </div>
+                               <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                   <div class="h-full bg-primary rounded-full transition-all" style="width: {{ percent }}%"></div>
+                               </div>
+                               <p class="text-[11px] font-semibold text-slate-500">{{ candidate.votes_count }} vote(s) total</p>
+                           </div>
+                           {% endfor %}
+                       {% else %}
+                           <p class="text-slate-400 text-sm font-medium italic">No votes recorded yet.</p>
+                       {% endif %}
+                   </div>
+               </div>
+
+               <!-- Fraud Alerts summary -->
+               <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 lg:p-8">
+                  <div class="flex justify-between items-center mb-8 border-b pb-4">
+                     <div>
+                        <h3 class="text-lg font-black text-slate-900">Security & Fraud Alerts</h3>
+                     </div>
+                  </div>
+                  
+                  <div class="space-y-4">
+                      {% if fraud_alerts %}
+                          {% for alert in fraud_alerts %}
+                          <div class="p-4 border {% if not alert.is_resolved %}border-rose-200 bg-rose-50{% else %}border-slate-200 bg-slate-50{% endif %} rounded-xl">
+                              <div class="flex justify-between items-start mb-1">
+                                  <span class="font-bold text-sm {% if not alert.is_resolved %}text-rose-700{% else %}text-slate-600{% endif %}">{{ alert.alert_type }}</span>
+                                  <span class="text-[10px] font-bold text-slate-400">{{ alert.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+                              </div>
+                              <p class="text-xs text-slate-600">{{ alert.detail }}</p>
+                          </div>
+                          {% endfor %}
+                      {% else %}
+                          <p class="text-slate-400 text-sm font-medium italic">No security alerts at this time.</p>
+                      {% endif %}
+                  </div>
+                  <button class="w-full mt-6 py-3 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">View All Logs</button>
+               </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Backend integration complete. LocalStorage logic removed. -->
+</body>
+</html>

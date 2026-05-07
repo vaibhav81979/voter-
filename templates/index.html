@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Election Commission of India — E-Voting Portal</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Playfair+Display:wght@700;800&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --saffron: #FF6B00;
+      --saffron-light: #FF9933;
+      --saffron-pale: #FFF3E0;
+      --navy: #002B7F;
+      --navy-dark: #001A52;
+      --navy-mid: #003A9E;
+      --green: #046A38;
+      --green-light: #138808;
+      --green-pale: #E8F5E9;
+      --gold: #C8922A;
+      --gold-light: #F0C040;
+      --cream: #FDF8F0;
+      --white: #FFFFFF;
+      --text: #1C1C2E;
+      --muted: #6B7280;
+      --border: #E5D9C8;
+      --shadow: rgba(0, 43, 127, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Noto Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .tricolor {
+      display: flex;
+      height: 6px;
+    }
+
+    .tc-s {
+      flex: 1;
+      background: var(--saffron-light);
+    }
+
+    .tc-w {
+      flex: 1;
+      background: #fff;
+    }
+
+    .tc-g {
+      flex: 1;
+      background: var(--green-light);
+    }
+
+    .border-strip {
+      height: 3px;
+      background: repeating-linear-gradient(90deg, var(--gold) 0px, var(--gold) 8px, transparent 8px, transparent 16px, var(--saffron-light) 16px, var(--saffron-light) 24px, transparent 24px, transparent 32px);
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 60%, var(--navy-mid) 100%);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+      min-height: 96px;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .emblem-ring {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 2px solid rgba(240, 192, 64, 0.6);
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 4px rgba(240, 192, 64, 0.15), inset 0 0 20px rgba(0, 0, 0, 0.2);
+      flex-shrink: 0;
+    }
+
+    .header-txt {
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-txt h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+      line-height: 1.2;
+      letter-spacing: 0.3px;
+    }
+
+    .header-devanagari {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 13px;
+      color: var(--gold-light);
+      margin-top: 2px;
+    }
+
+    .header-txt p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.65);
+      margin-top: 3px;
+      letter-spacing: 0.4px;
+    }
+
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .lang-switcher {
+      display: flex;
+      gap: 6px;
+    }
+
+    .lang-switch-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Noto Sans', sans-serif;
+    }
+
+    .lang-switch-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    .lang-switch-btn.active {
+      background: var(--saffron);
+      color: white;
+      border-color: var(--saffron);
+      box-shadow: 0 2px 8px rgba(255, 107, 0, 0.4);
+    }
+
+    .helpline-badge {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 8px 14px;
+      text-align: center;
+    }
+
+    .helpline-badge .label {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .helpline-badge .number {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gold-light);
+      line-height: 1;
+      margin-top: 1px;
+    }
+
+    .nav {
+      background: linear-gradient(90deg, var(--navy-dark), var(--navy));
+      display: flex;
+      overflow-x: auto;
+      border-bottom: 2px solid var(--saffron);
+    }
+
+    .nav a {
+      color: rgba(255, 255, 255, 0.78);
+      text-decoration: none;
+      padding: 11px 20px;
+      font-size: 12.5px;
+      font-weight: 600;
+      white-space: nowrap;
+      position: relative;
+      transition: all 0.2s;
+      letter-spacing: 0.3px;
+    }
+
+    .nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      right: 50%;
+      height: 2px;
+      background: var(--saffron-light);
+      transition: all 0.2s;
+    }
+
+    .nav a:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .nav a:hover::after,
+    .nav a.active::after {
+      left: 0;
+      right: 0;
+    }
+
+    .nav a.active {
+      color: white;
+      background: rgba(255, 107, 0, 0.18);
+    }
+
+    .alert-banner {
+      background: linear-gradient(90deg, #fff8e1, #fffde7);
+      border-bottom: 2px solid var(--gold);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #5D3B00;
+      overflow: hidden;
+    }
+
+    .alert-icon {
+      font-size: 20px;
+      animation: pulse 2s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.15);
+      }
+    }
+
+    .alert-marquee {
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .alert-scroll {
+      display: inline-block;
+      animation: marquee 28s linear infinite;
+      white-space: nowrap;
+    }
+
+    @keyframes marquee {
+      0% {
+        transform: translateX(60vw);
+      }
+
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    .hero {
+      background: linear-gradient(160deg, var(--navy-dark) 0%, var(--navy) 45%, #1A3A8F 100%);
+      padding: 60px 32px 70px;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-mandala {
+      position: absolute;
+      inset: 0;
+      opacity: 0.05;
+      background-image: radial-gradient(circle at 15% 50%, rgba(255, 153, 51, 1) 0%, transparent 40%), radial-gradient(circle at 85% 50%, rgba(4, 106, 56, 1) 0%, transparent 40%);
+    }
+
+    .hero-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Ccircle cx='40' cy='40' r='30' stroke='white' stroke-width='0.5'/%3E%3Ccircle cx='40' cy='40' r='20' stroke='white' stroke-width='0.5'/%3E%3Ccircle cx='40' cy='40' r='10' stroke='white' stroke-width='0.5'/%3E%3Cline x1='10' y1='40' x2='70' y2='40' stroke='white' stroke-width='0.3'/%3E%3Cline x1='40' y1='10' x2='40' y2='70' stroke='white' stroke-width='0.3'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero-chakra {
+      margin: 0 auto 20px;
+      display: block;
+      animation: fadeUp 0.8s ease both, spinSlow 30s linear infinite;
+      transform-origin: center;
+    }
+
+    @keyframes spinSlow {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      animation: fadeUpD 0.8s ease 0.15s both;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero h2 span {
+      color: var(--saffron-light);
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      opacity: 0.85;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.8;
+      animation: fadeUpD 0.8s ease 0.25s both;
+    }
+
+    @keyframes fadeUpD {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-divider {
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--saffron-light), var(--gold-light), var(--saffron-light), transparent);
+      margin: 16px auto;
+      animation: fadeUpD 0.8s ease 0.2s both;
+    }
+
+    .hero-pills {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+      animation: fadeUpD 0.8s ease 0.35s both;
+    }
+
+    .pill {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 30px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(4px);
+      transition: all 0.2s;
+    }
+
+    .pill:hover {
+      background: rgba(255, 153, 51, 0.25);
+      border-color: var(--saffron-light);
+    }
+
+    .digital-india {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 14px 24px;
+      background: linear-gradient(90deg, var(--green-pale), var(--saffron-pale), var(--green-pale));
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .di-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--navy);
+      background: white;
+      border-radius: 20px;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .main {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .section-ornament {
+      width: 8px;
+      height: 32px;
+      border-radius: 4px;
+      background: linear-gradient(180deg, var(--saffron-light), var(--saffron));
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    .stats-bar {
+      background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+      border-radius: 12px;
+      padding: 24px 32px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 32px var(--shadow);
+    }
+
+    .stats-bar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--saffron-light), var(--gold-light), var(--green-light));
+    }
+
+    .stat-item {
+      text-align: center;
+      color: white;
+      padding: 0 20px;
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .stat-item:last-child {
+      border-right: none;
+    }
+
+    .stat-num {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--gold-light);
+      line-height: 1;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.65);
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 44px;
+    }
+
+    .action-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .action-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+
+    .action-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px var(--shadow);
+      border-color: var(--navy);
+    }
+
+    .action-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .card-blue::before {
+      background: var(--navy);
+    }
+
+    .card-green::before {
+      background: var(--green);
+    }
+
+    .card-orange::before {
+      background: var(--saffron);
+    }
+
+    .card-red::before {
+      background: #CC2200;
+    }
+
+    .action-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+
+    .action-icon.blue {
+      background: linear-gradient(135deg, #E8EEF8, #D0DAF0);
+    }
+
+    .action-icon.green {
+      background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+    }
+
+    .action-icon.orange {
+      background: linear-gradient(135deg, #FFF0E5, #FFE0C0);
+    }
+
+    .action-icon.red {
+      background: linear-gradient(135deg, #FCE8E8, #FFCDD2);
+    }
+
+    .action-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .action-card p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .info-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .info-card-head {
+      background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+      color: white;
+      padding: 14px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 3px solid var(--saffron);
+    }
+
+    .info-card-head svg {
+      width: 18px;
+      height: 18px;
+      opacity: 0.9;
+      flex-shrink: 0;
+    }
+
+    .info-card-body {
+      padding: 18px 20px;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid #F5F0E8;
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .info-item:last-child {
+      border-bottom: none;
+    }
+
+    .info-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--saffron);
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .helpline-box {
+      background: linear-gradient(135deg, #FFF8E7, #FFF3D0);
+      border: 1px solid var(--gold);
+      border-radius: 12px;
+      padding: 20px 28px;
+      text-align: center;
+      color: #5D3B00;
+      margin-top: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .helpline-box::before,
+    .helpline-box::after {
+      content: '✦';
+      position: absolute;
+      font-size: 60px;
+      opacity: 0.06;
+      color: var(--gold);
+    }
+
+    .helpline-box::before {
+      top: -10px;
+      left: 10px;
+    }
+
+    .helpline-box::after {
+      bottom: -10px;
+      right: 10px;
+    }
+
+    .helpline-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 40px;
+      font-weight: 800;
+      color: var(--saffron);
+      line-height: 1;
+      margin: 6px 0;
+    }
+
+    .helpline-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .helpline-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .footer {
+      background: linear-gradient(135deg, var(--navy-dark), var(--navy));
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-top: 3px solid var(--saffron);
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer a {
+      color: rgba(255, 255, 255, 0.5);
+      text-decoration: none;
+      margin-left: 18px;
+      font-size: 11px;
+    }
+
+    .footer a:hover {
+      color: var(--gold-light);
+    }
+
+    .content-page {
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .content-page.active {
+      display: block !important;
+      opacity: 1;
+    }
+
+    .page-loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .page-loading::after {
+      content: 'Loading...';
+      display: block;
+      margin-top: 10px;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      50% {
+        opacity: 1;
+      }
+
+      51%,
+      100% {
+        opacity: 0.5;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--navy);
+      border-radius: 3px;
+    }
+
+    @media(max-width:768px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat-item:nth-child(2) {
+        border-right: none;
+      }
+
+      .helpline-badge,
+      .header-right .helpline-badge {
+        display: none;
+      }
+
+      .header {
+        padding: 12px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="tricolor">
+    <div class="tc-s"></div>
+    <div class="tc-w"></div>
+    <div class="tc-g"></div>
+  </div>
+
+  <header class="header">
+    <!-- Realistic Ashoka Chakra in header -->
+    <div class="emblem-ring">
+      <svg width="42" height="42" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#F0C040" stroke-width="6" />
+        <circle cx="50" cy="50" r="34" fill="none" stroke="#F0C040" stroke-width="2" />
+        <circle cx="50" cy="50" r="8" fill="#F0C040" />
+        <g stroke="#F0C040" stroke-width="2">
+          <line x1="50" y1="16" x2="50" y2="84" />
+          <line x1="50" y1="16" x2="50" y2="84" transform="rotate(15 50 50)" />
+          <line x1="50" y1="16" x2="50" y2="84" transform="rotate(30 50 50)" />
+          <line x1="50" y1="16" x2="50" y2="84" transform="rotate(45 50 50)" />
+          <line x1="50" y1="16" x2="50" y2="84" transform="rotate(60 50 50)" />
+          <line x1="50" y1="16" x2="50" y2="84" transform="rotate(75 50 50)" />
+          <line x1="50" y1="16" x2="50" y2="84" transform="rotate(90 50 50)" />
+          <line x1="50" y1="16" x2="50" y2="84" transform="rotate(105 50 50)" />
+          <line x1="50" y1="16" x2="50" y2="84" transform="rotate(120 50 50)" />
+          <line x1="50" y1="16" x2="50" y2="84" transform="rotate(135 50 50)" />
+          <line x1="50" y1="16" x2="50" y2="84" transform="rotate(150 50 50)" />
+          <line x1="50" y1="16" x2="50" y2="84" transform="rotate(165 50 50)" />
+        </g>
+        <g fill="#F0C040">
+          <circle cx="50" cy="5" r="3" />
+          <circle cx="50" cy="5" r="3" transform="rotate(15 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(30 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(45 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(60 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(75 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(90 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(105 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(120 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(135 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(150 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(165 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(180 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(195 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(210 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(225 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(240 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(255 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(270 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(285 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(300 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(315 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(330 50 50)" />
+          <circle cx="50" cy="5" r="3" transform="rotate(345 50 50)" />
+        </g>
+      </svg>
+    </div>
+    <div class="header-txt">
+      <h1 id="h-org">Election Commission of India</h1>
+      <div class="header-devanagari" id="h-devanagari">भारत निर्वाचन आयोग</div>
+      <p id="h-sub">Electronic Voting Portal &nbsp;·&nbsp; General Elections 2026</p>
+    </div>
+    <div class="header-right">
+      <div class="lang-switcher">
+        <button class="lang-switch-btn active" onclick="setLang('en',this)">English</button>
+        <button class="lang-switch-btn" onclick="setLang('hi',this)">हिन्दी</button>
+        <button class="lang-switch-btn" onclick="setLang('kn',this)">ಕನ್ನಡ</button>
+      </div>
+      <div class="helpline-badge">
+        <div class="label" id="h-helpline-label">Voter Helpline</div>
+        <div class="number">1950</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="border-strip"></div>
+
+  <nav class="nav" id="main-nav">
+    <a href="{{ url_for('voter.welcome') }}">🌐 Language</a>
+    <a href="{{ url_for('voter.home') }}" class="active" id="nav-home" data-page="home">🏠 Home</a>
+    <a href="{{ url_for('voter.election_date') }}" id="nav-election" data-page="election">📅 Election Dates</a>
+    <a href="{{ url_for('voter.news') }}" id="nav-news" data-page="news">📢 News & Updates</a>
+    <a href="{{ url_for('voter.candidate') }}" id="nav-candidate" data-page="candidate">👤 Candidate Info</a>
+    <a href="{{ url_for('voter.results') }}" id="nav-results" data-page="results">📊 Results</a>
+    <a href="{{ url_for('voter.help_page') }}" id="nav-help" data-page="help">❓ Help & Support</a>
+    <a href="{{ url_for('admin.admin_login') }}" id="nav-admin" data-page="admin-login" style="margin-left:auto;">🔐 Admin Portal</a>
+  </nav>
+
+  <div class="alert-banner">
+    <span class="alert-icon">📢</span>
+    <div class="alert-marquee">
+      <span class="alert-scroll" id="alert-text">🗳️ &nbsp;<strong>General Elections 2026 — Voting is OPEN
+          today.</strong>&nbsp; Cast your vote between 7:00 AM – 6:00 PM. &nbsp;|&nbsp; Voter Helpline:
+        <strong>1950</strong> &nbsp;|&nbsp; Jai Hind! 🇮🇳</span>
+    </div>
+  </div>
+
+  <div id="content-home" class="content-page active">
+    <section class="hero">
+      <div class="hero-mandala"></div>
+      <div class="hero-pattern"></div>
+
+      <!-- Large Ashoka Chakra (spinning) -->
+      <canvas id="heroChakra" width="100" height="100" class="hero-chakra"></canvas>
+      <defs>
+        <radialGradient id="hg" cx="50%" cy="50%">
+          <stop offset="0%" stop-color="#F0C040" />
+          <stop offset="100%" stop-color="#C8922A" />
+        </radialGradient>
+        <filter id="glow-lg">
+          <feGaussianBlur stdDeviation="2" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      <circle cx="50" cy="50" r="47" fill="none" stroke="#F0C040" stroke-width="3" filter="url(#glow-lg)" />
+      <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(240,192,64,0.3)" stroke-width="1" />
+      <circle cx="50" cy="50" r="34" fill="none" stroke="#F0C040" stroke-width="2" filter="url(#glow-lg)" />
+      <circle cx="50" cy="50" r="29" fill="none" stroke="rgba(240,192,64,0.3)" stroke-width="0.8" />
+      <circle cx="50" cy="50" r="9" fill="url(#hg)" />
+      <circle cx="50" cy="50" r="6" fill="#002B7F" />
+      <circle cx="50" cy="50" r="2.8" fill="#F0C040" />
+      <g stroke="#F0C040" stroke-width="2.2" stroke-linecap="round" filter="url(#glow-lg)">
+        <line x1="50" y1="16" x2="50" y2="41" />
+        <line x1="57.7" y1="16.6" x2="52.7" y2="41.3" />
+        <line x1="64.9" y1="18.5" x2="55" y2="42.2" />
+        <line x1="71.2" y1="21.6" x2="56.7" y2="44" />
+        <line x1="76.5" y1="26.1" x2="57.6" y2="46.4" />
+        <line x1="80" y1="31.7" x2="57.6" y2="49" />
+        <line x1="82.3" y1="37.9" x2="56.7" y2="51.3" />
+        <line x1="83" y1="44.3" x2="55.1" y2="52.9" />
+        <line x1="82.3" y1="50.6" x2="52.7" y2="53.8" />
+        <line x1="80" y1="56.5" x2="50" y2="53.8" />
+        <line x1="76.5" y1="62" x2="47.3" y2="52.9" />
+        <line x1="71.2" y1="66.4" x2="44.9" y2="51.3" />
+        <line x1="50" y1="84" x2="50" y2="59" />
+        <line x1="42.3" y1="83.4" x2="47.3" y2="58.7" />
+        <line x1="35.1" y1="81.5" x2="45" y2="57.8" />
+        <line x1="28.8" y1="78.4" x2="43.3" y2="56" />
+        <line x1="23.5" y1="73.9" x2="42.4" y2="53.6" />
+        <line x1="20" y1="68.3" x2="42.4" y2="51" />
+        <line x1="17.7" y1="62.1" x2="43.3" y2="48.7" />
+        <line x1="17" y1="55.7" x2="44.9" y2="47.1" />
+        <line x1="17.7" y1="49.4" x2="47.3" y2="46.2" />
+        <line x1="20" y1="43.5" x2="50" y2="46.2" />
+        <line x1="23.5" y1="38" x2="52.7" y2="47.1" />
+        <line x1="28.8" y1="33.6" x2="55.1" y2="48.7" />
+      </g>
+      <g fill="#F0C040">
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(0,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(15,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(30,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(45,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(60,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(75,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(90,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(105,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(120,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(135,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(150,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(165,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(180,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(195,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(210,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(225,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(240,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(255,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(270,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(285,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(300,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(315,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(330,50,50)" />
+        <ellipse cx="50" cy="6" rx="2.8" ry="5" transform="rotate(345,50,50)" />
+      </g>
+      </svg>
+
+      <h2 id="hero-title">Welcome to <span>India's</span> E-Voting Portal</h2>
+      <div class="hero-divider"></div>
+      <p class="hero-sub" id="hero-sub">A secure, transparent and accessible electronic voting system powered by
+        AI-based face recognition and biometric authentication. Every vote counts. Every vote is protected.</p>
+      <div class="hero-pills">
+        <div class="pill">🔒 <span id="pill1">End-to-End Encrypted</span></div>
+        <div class="pill">🤖 <span id="pill2">AI Face Recognition</span></div>
+        <div class="pill">🫶 <span id="pill3">Biometric Auth</span></div>
+        <div class="pill">🚫 <span id="pill4">Duplicate Vote Prevention</span></div>
+        <div class="pill">🇮🇳 <span id="pill5">Made in India</span></div>
+      </div>
+    </section>
+
+    <div class="digital-india">
+      <div class="di-badge">🇮🇳 Digital India Initiative</div>
+      <div class="di-badge">🏛️ Government of India</div>
+      <div class="di-badge">🔐 ISO 27001 Certified</div>
+      <div class="di-badge">⚖️ Model Code of Conduct</div>
+    </div>
+
+    <main class="main">
+
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-num">96.8 Cr</div>
+          <div class="stat-label">Registered Voters</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">10.5 L</div>
+          <div class="stat-label">Polling Stations</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">543</div>
+          <div class="stat-label">Constituencies</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Secure & Encrypted</div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <div class="section-ornament"></div>
+        <div class="section-title" id="section-quick">Quick Access</div>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="quick-actions">
+        <a href="{{ url_for('voter.login') }}" data-page="login" class="action-card card-blue">
+          <div class="action-icon blue">🗳️</div>
+          <h3 id="qa1-title">Cast Your Vote</h3>
+          <p id="qa1-sub">Login and cast your vote securely using biometric verification</p>
+        </a>
+        <a href="{{ url_for('voter.register') }}" data-page="register" class="action-card card-green">
+          <div class="action-icon green">📝</div>
+          <h3 id="qa2-title">Voter Registration</h3>
+          <p id="qa2-sub">New voter? Register with your Aadhaar and Voter ID</p>
+        </a>
+        <a href="{{ url_for('voter.epic_recovery') }}" class="action-card card-orange">
+          <div class="action-icon orange">🔍</div>
+          <h3 id="qa3-title">Find EPIC Number</h3>
+          <p id="qa3-sub">Forgot your Voter ID? Recover it using Aadhaar details</p>
+        </a>
+        <a href="{{ url_for('voter.booth') }}" data-page="booth" class="action-card card-red">
+          <div class="action-icon red">📍</div>
+          <h3 id="qa4-title">Find Your Booth</h3>
+          <p id="qa4-sub">Locate your polling booth using your registered address</p>
+        </a>
+      </div>
+
+      <div class="section-head">
+        <div class="section-ornament" style="background:linear-gradient(180deg,var(--green),var(--green-light));"></div>
+        <div class="section-title">Voter Information</div>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-card-head">
+            <svg viewBox="0 0 24 24" fill="white">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+            </svg>
+            <span id="card1-title">Eligibility to Vote</span>
+          </div>
+          <div class="info-card-body">
+            <div class="info-item">
+              <div class="info-dot"></div><span id="e1">Must be a citizen of India</span>
+            </div>
+            <div class="info-item">
+              <div class="info-dot"></div><span id="e2">Must be 18 years of age or above</span>
+            </div>
+            <div class="info-item">
+              <div class="info-dot"></div><span id="e3">Must have a valid Voter ID (EPIC Number)</span>
+            </div>
+            <div class="info-item">
+              <div class="info-dot"></div><span id="e4">Must be registered in the electoral roll</span>
+            </div>
+            <div class="info-item">
+              <div class="info-dot"></div><span id="e5">Device with camera and fingerprint sensor required</span>
+            </div>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-head">
+            <svg viewBox="0 0 24 24" fill="white">
+              <path
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            <span id="card2-title">What You Need</span>
+          </div>
+          <div class="info-card-body">
+            <div class="info-item">
+              <div class="info-dot" style="background:var(--green);"></div><span id="n1">Your Voter ID / EPIC
+                Number</span>
+            </div>
+            <div class="info-item">
+              <div class="info-dot" style="background:var(--green);"></div><span id="n2">Aadhaar-linked mobile number
+                (for OTP)</span>
+            </div>
+            <div class="info-item">
+              <div class="info-dot" style="background:var(--green);"></div><span id="n3">Device with working front
+                camera</span>
+            </div>
+            <div class="info-item">
+              <div class="info-dot" style="background:var(--green);"></div><span id="n4">Fingerprint sensor on your
+                device</span>
+            </div>
+            <div class="info-item">
+              <div class="info-dot" style="background:var(--green);"></div><span id="n5">Stable internet
+                connection</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="helpline-box">
+        <div class="helpline-title" id="helpline-title">📞 Voter Helpline — Available 24×7</div>
+        <div class="helpline-num">1950</div>
+        <div class="helpline-sub" id="helpline-sub">For assistance with login, EPIC recovery or any technical issues
+          during voting.</div>
+      </div>
+
+    </main>
+  </div>
+
+  <div id="content-login" class="content-page" style="display:none;"></div>
+  <div id="content-register" class="content-page" style="display:none;"></div>
+  <div id="content-admin-login" class="content-page" style="display:none;"></div>
+  <div id="content-booth" class="content-page" style="display:none;"></div>
+  <div id="content-candidate" class="content-page" style="display:none;"></div>
+  <div id="content-results" class="content-page" style="display:none;"></div>
+  <div id="content-help" class="content-page" style="display:none;"></div>
+
+  <div class="tricolor">
+    <div class="tc-s"></div>
+    <div class="tc-w"></div>
+    <div class="tc-g"></div>
+  </div>
+  <footer class="footer">
+    <div class="footer-left">
+      <svg width="18" height="18" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="#F0C040" stroke-width="3" />
+        <circle cx="50" cy="50" r="34" fill="none" stroke="#F0C040" stroke-width="1.5" />
+        <circle cx="50" cy="50" r="6" fill="#F0C040" />
+        <g stroke="#F0C040" stroke-width="1.5">
+          <line x1="50" y1="16" x2="50" y2="44" />
+          <line x1="57.7" y1="16.6" x2="52.7" y2="44" />
+          <line x1="64.9" y1="18.5" x2="55" y2="44" />
+          <line x1="71.2" y1="21.6" x2="56.7" y2="44" />
+          <line x1="76.5" y1="26.1" x2="57.6" y2="44" />
+          <line x1="80" y1="31.7" x2="57.6" y2="44" />
+          <line x1="50" y1="84" x2="50" y2="56" />
+          <line x1="42.3" y1="83.4" x2="47.3" y2="56" />
+          <line x1="35.1" y1="81.5" x2="45" y2="56" />
+          <line x1="28.8" y1="78.4" x2="43.3" y2="56" />
+          <line x1="23.5" y1="73.9" x2="42.4" y2="56" />
+          <line x1="20" y1="68.3" x2="42.4" y2="56" />
+        </g>
+      </svg>
+      <span id="footer-copy">© 2026 Election Commission of India. All Rights Reserved.</span>
+    </div>
+    <div>
+      <a href="#" id="footer-privacy">Privacy Policy</a>
+      <a href="#" id="footer-terms">Terms of Use</a>
+      <a href="#" id="footer-help">Help</a>
+      <a href="#" id="footer-rti">RTI</a>
+    </div>
+  </footer>
+
+  <script>
+    // Accurate Ashoka Chakra ← ADD FROM HERE
+    const hc = document.getElementById('heroChakra');
+    const hctx = hc.getContext('2d');
+    let hAngle = 0;
+    function drawHeroChakra(rot) {
+      hctx.clearRect(0, 0, 100, 100);
+      hctx.save();
+      hctx.translate(50, 50);
+      hctx.rotate(rot);
+      const COLOR = '#F0C040';
+      hctx.strokeStyle = COLOR;
+      hctx.fillStyle = COLOR;
+      hctx.lineWidth = 3;
+      hctx.beginPath(); hctx.arc(0, 0, 47, 0, Math.PI * 2); hctx.stroke();
+      hctx.lineWidth = 1.5;
+      hctx.beginPath(); hctx.arc(0, 0, 34, 0, Math.PI * 2); hctx.stroke();
+      hctx.lineWidth = 1.8;
+      for (let i = 0; i < 24; i++) {
+        const a = (i * Math.PI * 2) / 24;
+        hctx.beginPath();
+        hctx.moveTo(Math.cos(a) * 6, Math.sin(a) * 6);
+        hctx.lineTo(Math.cos(a) * 34, Math.sin(a) * 34);
+        hctx.stroke();
+      }
+      for (let i = 0; i < 24; i++) {
+        const a = (i * Math.PI * 2) / 24;
+        hctx.beginPath();
+        hctx.arc(Math.cos(a) * 43, Math.sin(a) * 43, 3.5, 0, Math.PI * 2);
+        hctx.fill();
+      }
+      hctx.beginPath(); hctx.arc(0, 0, 6, 0, Math.PI * 2); hctx.fill();
+      hctx.restore();
+    }
+    function animateHero() { hAngle += 0.004; drawHeroChakra(hAngle); requestAnimationFrame(animateHero); }
+    animateHero();
+    // ← ADD TILL HERE
+
+    const T = {
+      en: {
+        'h-org': 'Election Commission of India', 'h-devanagari': 'भारत निर्वाचन आयोग',
+        'h-sub': 'Electronic Voting Portal &nbsp;·&nbsp; General Elections 2026', 'h-helpline-label': 'Voter Helpline',
+        'nav-home': '🏠 Home', 'nav-login': '🗳️ Voter Login', 'nav-register': '📝 Register to Vote',
+        'nav-booth': '📍 Find Your Booth', 'nav-candidate': '👤 Candidate Info', 'nav-results': '📊 Results', 'nav-help': '❓ Help & Support',
+        'alert-text': '🗳️ &nbsp;<strong>General Elections 2026 — Voting is OPEN today.</strong>&nbsp; Cast your vote between 7:00 AM – 6:00 PM. &nbsp;|&nbsp; Voter Helpline: <strong>1950</strong> &nbsp;|&nbsp; Jai Hind! 🇮🇳',
+        'hero-title': 'Welcome to <span>India\'s</span> E-Voting Portal',
+        'hero-sub': 'A secure, transparent and accessible electronic voting system powered by AI-based face recognition and biometric authentication. Every vote counts. Every vote is protected.',
+        'pill1': 'End-to-End Encrypted', 'pill2': 'AI Face Recognition', 'pill3': 'Biometric Auth', 'pill4': 'Duplicate Vote Prevention', 'pill5': 'Made in India',
+        'section-quick': 'Quick Access',
+        'qa1-title': 'Cast Your Vote', 'qa1-sub': 'Login and cast your vote securely using biometric verification',
+        'qa2-title': 'Voter Registration', 'qa2-sub': 'New voter? Register with your Aadhaar and Voter ID',
+        'qa3-title': 'Find EPIC Number', 'qa3-sub': 'Forgot your Voter ID? Recover it using Aadhaar details',
+        'qa4-title': 'Find Your Booth', 'qa4-sub': 'Locate your polling booth using your registered address',
+        'card1-title': 'Eligibility to Vote', 'card2-title': 'What You Need',
+        'e1': 'Must be a citizen of India', 'e2': 'Must be 18 years of age or above',
+        'e3': 'Must have a valid Voter ID (EPIC Number)', 'e4': 'Must be registered in the electoral roll', 'e5': 'Device with camera and fingerprint sensor required',
+        'n1': 'Your Voter ID / EPIC Number', 'n2': 'Aadhaar-linked mobile number (for OTP)', 'n3': 'Device with working front camera', 'n4': 'Fingerprint sensor on your device', 'n5': 'Stable internet connection',
+        'helpline-title': '📞 Voter Helpline — Available 24×7', 'helpline-sub': 'For assistance with login, EPIC recovery or any technical issues during voting.',
+        'footer-copy': '© 2026 Election Commission of India. All Rights Reserved.',
+        'footer-privacy': 'Privacy Policy', 'footer-terms': 'Terms of Use', 'footer-help': 'Help', 'footer-rti': 'RTI'
+      },
+      hi: {
+        'h-org': 'भारत निर्वाचन आयोग', 'h-devanagari': 'Election Commission of India',
+        'h-sub': 'इलेक्ट्रॉनिक मतदान पोर्टल &nbsp;·&nbsp; आम चुनाव 2026', 'h-helpline-label': 'मतदाता हेल्पलाइन',
+        'nav-home': '🏠 होम', 'nav-login': '🗳️ मतदाता लॉगिन', 'nav-register': '📝 मतदाता पंजीकरण',
+        'nav-booth': '📍 बूथ खोजें', 'nav-candidate': '👤 उम्मीदवार जानकारी', 'nav-results': '📊 परिणाम', 'nav-help': '❓ सहायता',
+        'alert-text': '🗳️ &nbsp;<strong>आम चुनाव 2026 — आज मतदान खुला है।</strong>&nbsp; सुबह 7:00 बजे से शाम 6:00 बजे के बीच वोट डालें। &nbsp;|&nbsp; हेल्पलाइन: <strong>1950</strong> &nbsp;|&nbsp; जय हिन्द! 🇮🇳',
+        'hero-title': '<span>भारत</span> के ई-मतदान पोर्टल में आपका स्वागत है',
+        'hero-sub': 'AI आधारित फेस रिकग्निशन और बायोमेट्रिक प्रमाणीकरण द्वारा संचालित सुरक्षित और पारदर्शी मतदान प्रणाली। हर वोट मायने रखता है।',
+        'pill1': 'एंड-टू-एंड एन्क्रिप्टेड', 'pill2': 'AI फेस रिकग्निशन', 'pill3': 'बायोमेट्रिक', 'pill4': 'डुप्लीकेट वोट रोकथाम', 'pill5': 'मेड इन इंडिया',
+        'section-quick': 'त्वरित पहुँच',
+        'qa1-title': 'अपना वोट डालें', 'qa1-sub': 'बायोमेट्रिक से सुरक्षित लॉगिन करें और वोट दें',
+        'qa2-title': 'मतदाता पंजीकरण', 'qa2-sub': 'नए मतदाता? आधार और वोटर आईडी से पंजीकरण करें',
+        'qa3-title': 'EPIC नंबर खोजें', 'qa3-sub': 'वोटर आईडी भूल गए? आधार से पुनः प्राप्त करें',
+        'qa4-title': 'बूथ खोजें', 'qa4-sub': 'अपने पंजीकृत पते से मतदान केंद्र खोजें',
+        'card1-title': 'मतदान पात्रता', 'card2-title': 'आवश्यक दस्तावेज़',
+        'e1': 'भारत का नागरिक होना चाहिए', 'e2': '18 वर्ष या उससे अधिक आयु',
+        'e3': 'वैध वोटर आईडी (EPIC नंबर) होना चाहिए', 'e4': 'मतदाता सूची में नाम होना चाहिए', 'e5': 'कैमरा और फिंगरप्रिंट सेंसर वाला डिवाइस आवश्यक',
+        'n1': 'वोटर आईडी / EPIC नंबर', 'n2': 'आधार से जुड़ा मोबाइल नंबर (OTP के लिए)', 'n3': 'फ्रंट कैमरा वाला डिवाइस', 'n4': 'फिंगरप्रिंट सेंसर', 'n5': 'स्थिर इंटरनेट कनेक्शन',
+        'helpline-title': '📞 मतदाता हेल्पलाइन — 24×7 उपलब्ध', 'helpline-sub': 'लॉगिन, EPIC रिकवरी या मतदान के दौरान तकनीकी समस्याओं के लिए।',
+        'footer-copy': '© 2026 भारत निर्वाचन आयोग। सर्वाधिकार सुरक्षित।',
+        'footer-privacy': 'गोपनीयता नीति', 'footer-terms': 'उपयोग की शर्तें', 'footer-help': 'सहायता', 'footer-rti': 'RTI'
+      },
+      kn: {
+        'h-org': 'ಭಾರತ ಚುನಾವಣಾ ಆಯೋಗ', 'h-devanagari': 'Election Commission of India',
+        'h-sub': 'ಎಲೆಕ್ಟ್ರಾನಿಕ್ ಮತದಾನ ಪೋರ್ಟಲ್ &nbsp;·&nbsp; ಸಾರ್ವತ್ರಿಕ ಚುನಾವಣೆ 2026', 'h-helpline-label': 'ಮತದಾರ ಸಹಾಯವಾಣಿ',
+        'nav-home': '🏠 ಮುಖಪುಟ', 'nav-login': '🗳️ ಮತದಾರ ಲಾಗಿನ್', 'nav-register': '📝 ನೋಂದಣಿ',
+        'nav-booth': '📍 ಬೂತ್ ಹುಡುಕಿ', 'nav-candidate': '👤 ಅಭ್ಯರ್ಥಿ ಮಾಹಿತಿ', 'nav-results': '📊 ಫಲಿತಾಂಶ', 'nav-help': '❓ ಸಹಾಯ',
+        'alert-text': '🗳️ &nbsp;<strong>ಸಾರ್ವತ್ರಿಕ ಚುನಾವಣೆ 2026 — ಇಂದು ಮತದಾನ ತೆರೆದಿದೆ.</strong>&nbsp; ಬೆಳಿಗ್ಗೆ 7:00 ರಿಂದ ಸಂಜೆ 6:00 ರವರೆಗೆ ಮತ ಹಾಕಿ। &nbsp;|&nbsp; ಸಹಾಯವಾಣಿ: <strong>1950</strong>',
+        'hero-title': '<span>ಭಾರತದ</span> ಇ-ಮತದಾನ ಪೋರ್ಟಲ್‌ಗೆ ಸ್ವಾಗತ',
+        'hero-sub': 'AI ಆಧಾರಿತ ಮುಖ ಗುರುತಿಸುವಿಕೆ ಮತ್ತು ಬಯೋಮೆಟ್ರಿಕ್ ದೃಢೀಕರಣದ ಮೂಲಕ ಸುರಕ್ಷಿತ ಮತ್ತು ಪಾರದರ್ಶಕ ಮತದಾನ ವ್ಯವಸ್ಥೆ.',
+        'pill1': 'ಎಂಡ್-ಟು-ಎಂಡ್ ಎನ್‌ಕ್ರಿಪ್ಟೆಡ್', 'pill2': 'AI ಮುಖ ಗುರುತಿಸುವಿಕೆ', 'pill3': 'ಬಯೋಮೆಟ್ರಿಕ್', 'pill4': 'ನಕಲಿ ಮತ ತಡೆ', 'pill5': 'ಮೇಡ್ ಇನ್ ಇಂಡಿಯಾ',
+        'section-quick': 'ತ್ವರಿತ ಪ್ರವೇಶ',
+        'qa1-title': 'ನಿಮ್ಮ ಮತ ಹಾಕಿ', 'qa1-sub': 'ಬಯೋಮೆಟ್ರಿಕ್ ಪರಿಶೀಲನೆಯ ಮೂಲಕ ಸುರಕ್ಷಿತವಾಗಿ ಲಾಗಿನ್ ಮಾಡಿ',
+        'qa2-title': 'ಮತದಾರ ನೋಂದಣಿ', 'qa2-sub': 'ಹೊಸ ಮತದಾರರೇ? ಆಧಾರ್ ಮತ್ತು ಮತದಾರ ಗುರುತಿನ ಚೀಟಿಯೊಂದಿಗೆ ನೋಂದಾಯಿಸಿ',
+        'qa3-title': 'EPIC ನಂಬರ್ ಹುಡುಕಿ', 'qa3-sub': 'ಮತದಾರ ಗುರುತಿನ ಚೀಟಿ ಮರೆತಿದ್ದೀರಾ? ಆಧಾರ್ ಬಳಸಿ ಮರಳಿ ಪಡೆಯಿರಿ',
+        'qa4-title': 'ನಿಮ್ಮ ಬೂತ್ ಹುಡುಕಿ', 'qa4-sub': 'ನಿಮ್ಮ ನೋಂದಾಯಿತ ವಿಳಾಸ ಬಳಸಿ ಮತದಾನ ಕೇಂದ್ರ ಹುಡುಕಿ',
+        'card1-title': 'ಮತದಾನ ಅರ್ಹತೆ', 'card2-title': 'ಅಗತ್ಯ ದಾಖಲೆಗಳು',
+        'e1': 'ಭಾರತದ ನಾಗರಿಕರಾಗಿರಬೇಕು', 'e2': '18 ವರ್ಷ ಅಥವಾ ಹೆಚ್ಚಿನ ವಯಸ್ಸು',
+        'e3': 'ಮಾನ್ಯ ಮತದಾರ ಗುರುತಿನ ಚೀಟಿ (EPIC ನಂಬರ್) ಇರಬೇಕು', 'e4': 'ಮತದಾರರ ಪಟ್ಟಿಯಲ್ಲಿ ಹೆಸರು ಇರಬೇಕು', 'e5': 'ಕ್ಯಾಮೆರಾ ಮತ್ತು ಫಿಂಗರ್‌ಪ್ರಿಂಟ್ ಸೆನ್ಸರ್ ಇರುವ ಸಾಧನ ಅಗತ್ಯ',
+        'n1': 'ಮತದಾರ ಗುರುತಿನ ಚೀಟಿ / EPIC ನಂಬರ್', 'n2': 'ಆಧಾರ್ ಜೋಡಿಸಿದ ಮೊಬೈಲ್ ನಂಬರ್ (OTP ಗಾಗಿ)', 'n3': 'ಮುಂಭಾಗದ ಕ್ಯಾಮೆರಾ ಇರುವ ಸಾಧನ', 'n4': 'ಫಿಂಗರ್‌ಪ್ರಿಂಟ್ ಸೆನ್ಸರ್', 'n5': 'ಸ್ಥಿರ ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕ',
+        'helpline-title': '📞 ಮತದಾರ ಸಹಾಯವಾಣಿ — 24×7 ಲಭ್ಯ', 'helpline-sub': 'ಲಾಗಿನ್, EPIC ಮರುಪಡೆಯುವಿಕೆ ಅಥವಾ ಮತದಾನದ ತಾಂತ್ರಿಕ ಸಮಸ್ಯೆಗಳಿಗೆ.',
+        'footer-copy': '© 2026 ಭಾರತ ಚುನಾವಣಾ ಆಯೋಗ. ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.',
+        'footer-privacy': 'ಗೌಪ್ಯತಾ ನೀತಿ', 'footer-terms': 'ಬಳಕೆಯ ನಿಯಮಗಳು', 'footer-help': 'ಸಹಾಯ', 'footer-rti': 'RTI'
+      }
+    };
+
+    function setLang(lang, btn) {
+      const t = T[lang];
+      Object.keys(t).forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = t[id]; });
+      document.querySelectorAll('.lang-switch-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      document.documentElement.lang = lang;
+      document.body.style.fontFamily = (lang === 'hi' || lang === 'kn') ? "'Noto Sans Devanagari','Noto Sans',sans-serif" : "'Noto Sans',sans-serif";
+      try { localStorage.setItem('votingLang', lang); } catch (e) { }
+    }
+
+    // ===== SPA Navigation Handler =====
+    const pageRouteMap = {
+      'home': "{{ url_for('voter.home') }}",
+      'login': "{{ url_for('voter.login') }}",
+      'register': "{{ url_for('voter.register') }}",
+      'admin-login': "{{ url_for('admin.admin_login') }}",
+      'booth': "{{ url_for('voter.booth') }}",
+      'candidate': "{{ url_for('voter.candidate') }}",
+      'results': "{{ url_for('voter.results') }}",
+      'help': "{{ url_for('voter.help_page') }}",
+      'election': "{{ url_for('voter.election_date') }}",
+      'news': "{{ url_for('voter.news') }}"
+    };
+
+    async function loadPage(page) {
+      const url = pageRouteMap[page];
+      if (!url) return;
+
+      const contentDiv = document.getElementById(`content-${page}`);
+      if (!contentDiv) return;
+
+      // Show loading state
+      contentDiv.innerHTML = '<div class="page-loading">Loading page...</div>';
+      contentDiv.style.display = 'block';
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          contentDiv.innerHTML = '<div style="padding:40px;text-align:center;color:red;">Error loading page</div>';
+          return;
+        }
+
+        const html = await response.text();
+        // Parse HTML and extract main content
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        // Try to find main content
+        let content = doc.querySelector('main');
+        if (!content) {
+          content = doc.querySelector('form');
+        }
+        if (!content) {
+          content = doc.querySelector('[role="main"]');
+        }
+        if (!content) {
+          // Get all body content except header/nav/footer
+          const body = doc.body;
+          const bodyClone = body.cloneNode(false);
+          Array.from(body.childNodes).forEach(node => {
+            if (node.nodeType === Node.ELEMENT_NODE &&
+              !['NAV', 'HEADER', 'FOOTER'].includes(node.tagName) &&
+              !node.classList.contains('nav') &&
+              !node.classList.contains('footer')) {
+              bodyClone.appendChild(node.cloneNode(true));
+            }
+          });
+          content = bodyClone;
+        }
+
+        // Set the content
+        contentDiv.innerHTML = content.innerHTML || content.outerHTML;
+
+        // Re-initialize any scripts that might be needed (forms, buttons, etc)
+        const newScripts = contentDiv.querySelectorAll('script');
+        newScripts.forEach(script => {
+          const newScript = document.createElement('script');
+          newScript.textContent = script.textContent;
+          script.replaceWith(newScript);
+        });
+
+      } catch (error) {
+        console.error('Error loading page:', error);
+        contentDiv.innerHTML = '<div style="padding:40px;text-align:center;color:red;">Failed to load page. Please try again.</div>';
+      }
+    }
+
+    // Navigation handler
+    function initializeNavigation() {
+      const navLinks = document.querySelectorAll('[data-page]');
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const page = link.getAttribute('data-page');
+
+          // Hide all content pages
+          document.querySelectorAll('.content-page').forEach(el => {
+            el.classList.remove('active');
+            el.style.display = 'none';
+          });
+
+          // Update active nav link
+          navLinks.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+
+          // Load and show the page
+          const contentDiv = document.getElementById(`content-${page}`);
+          if (contentDiv) {
+            contentDiv.classList.add('active');
+            contentDiv.style.display = 'block';
+
+            // Load if empty
+            if (contentDiv.innerHTML.trim() === '' || contentDiv.innerHTML.includes('style="display:none')) {
+              loadPage(page);
+            }
+          }
+
+          // Scroll to top
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      let lang = 'en';
+      try { lang = new URLSearchParams(location.search).get('lang') || localStorage.getItem('votingLang') || 'en'; } catch (e) { }
+      if (lang !== 'en') {
+        document.querySelectorAll('.lang-switch-btn').forEach(b => {
+          if ((lang === 'hi' && b.textContent.includes('हिन्दी')) || (lang === 'kn' && b.textContent.includes('ಕನ್ನಡ'))) {
+            b.classList.add('active');
+          } else { b.classList.remove('active'); }
+        });
+        setLang(lang, null);
+      }
+    });
+  </script>
+</body>
+
+</html>

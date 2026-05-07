@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome – India E-Voting Portal</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --navy: #0a1a4e;
+      --navy2: #0d2270;
+      --gold: #f4a900;
+      --gold2: #ffd166;
+      --white: #ffffff;
+      --muted: rgba(255, 255, 255, 0.65);
+    }
+
+    html,
+    body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      overflow: hidden;
+    }
+
+    /* ── animated background ── */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, #1a3580 0%, #0a1a4e 60%, #060e2e 100%);
+    }
+
+    .bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle 300px at 10% 80%, rgba(244, 169, 0, .12) 0%, transparent 70%),
+        radial-gradient(circle 400px at 90% 20%, rgba(244, 169, 0, .08) 0%, transparent 70%);
+    }
+
+    /* subtle grid overlay */
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* floating particles */
+    .particles {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0;
+      animation: float var(--d, 8s) var(--delay, 0s) infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: .6;
+      }
+
+      90% {
+        opacity: .3;
+      }
+
+      100% {
+        transform: translateY(-10vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    /* ── main card ── */
+    .card {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 24px;
+      animation: cardIn .9s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* tricolour — 3 vertical glowing pills side by side */
+    .tricolour {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      margin-bottom: 24px;
+      animation: emblemIn .8s .1s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    .tc-bar {
+      width: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 12px currentColor;
+      transition: height .4s;
+    }
+
+    .tc-saffron {
+      height: 54px;
+      background: #FF9933;
+      color: #FF9933;
+    }
+
+    .tc-white {
+      height: 70px;
+      background: #ffffff;
+      color: #ffffff;
+    }
+
+    .tc-green {
+      height: 54px;
+      background: #138808;
+      color: #138808;
+    }
+
+    /* emblem */
+    .emblem-wrap {
+      position: relative;
+      margin-bottom: 22px;
+      animation: emblemIn .8s .15s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    @keyframes emblemIn {
+      from {
+        opacity: 0;
+        transform: scale(.7) rotate(-10deg);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+      }
+    }
+
+    .emblem-ring {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 30px rgba(244, 169, 0, .35), 0 0 0 3px #f4a900;
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 30px rgba(244, 169, 0, .35), 0 0 0 3px #f4a900;
+      }
+
+      50% {
+        box-shadow: 0 0 50px rgba(244, 169, 0, .6), 0 0 0 3px #ffd166;
+      }
+    }
+
+    .chakra-svg {
+      width: 104px;
+      height: 104px;
+    }
+
+    /* headline */
+    .headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 900;
+      color: var(--white);
+      text-align: center;
+      line-height: 1.15;
+      letter-spacing: -.5px;
+      margin-bottom: 8px;
+      animation: fadeUp .7s .3s both;
+    }
+
+    .headline span {
+      color: var(--gold);
+    }
+
+    .sub {
+      font-size: clamp(13px, 2vw, 16px);
+      color: var(--muted);
+      text-align: center;
+      letter-spacing: .4px;
+      margin-bottom: 10px;
+      animation: fadeUp .7s .4s both;
+    }
+
+    /* divider */
+    .divider {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0 auto 36px;
+      animation: fadeUp .7s .45s both;
+    }
+
+    /* language prompt */
+    .lang-prompt {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+      animation: fadeUp .7s .5s both;
+    }
+
+    /* language buttons */
+    .lang-grid {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp .7s .55s both;
+    }
+
+    .lang-btn {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 140px;
+      height: 100px;
+      border-radius: 16px;
+      border: 1.5px solid rgba(244, 169, 0, .3);
+      background: rgba(255, 255, 255, .04);
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      text-decoration: none;
+      overflow: hidden;
+      transition: transform .25s, border-color .25s, background .25s, box-shadow .25s;
+    }
+
+    .lang-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(244, 169, 0, .15), transparent);
+      opacity: 0;
+      transition: opacity .25s;
+    }
+
+    .lang-btn:hover {
+      transform: translateY(-6px) scale(1.04);
+      border-color: var(--gold);
+      background: rgba(244, 169, 0, .08);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, .4), 0 0 20px rgba(244, 169, 0, .2);
+    }
+
+    .lang-btn:hover::before {
+      opacity: 1;
+    }
+
+    .lang-btn:active {
+      transform: translateY(-2px) scale(1.01);
+    }
+
+    .lang-native {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    /* footer strip */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 12px 24px;
+      background: rgba(6, 14, 46, .8);
+      border-top: 1px solid rgba(244, 169, 0, .15);
+      font-size: 11px;
+      color: rgba(255, 255, 255, .35);
+      letter-spacing: .5px;
+      animation: fadeUp .7s .7s both;
+    }
+
+    .footer span {
+      color: rgba(244, 169, 0, .5);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* selection ripple */
+    .lang-btn.selected {
+      animation: selectPop .4s ease;
+    }
+
+    @keyframes selectPop {
+      0% {
+        transform: scale(1);
+      }
+
+      40% {
+        transform: scale(1.12);
+        box-shadow: 0 0 40px rgba(244, 169, 0, .5);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- background -->
+  <div class="bg"></div>
+
+  <!-- floating particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- main content -->
+  <div class="card">
+
+    <!-- tricolour — glowing vertical bars -->
+    <div class="tricolour">
+      <div class="tc-bar tc-saffron"></div>
+      <div class="tc-bar tc-white"></div>
+      <div class="tc-bar tc-green"></div>
+    </div>
+
+    <!-- emblem: accurate Ashoka Chakra drawn by JS -->
+    <div class="emblem-wrap">
+      <div class="emblem-ring">
+        <canvas id="chakra" width="104" height="104" class="chakra-svg"></canvas>
+      </div>
+    </div>
+
+    <h1 class="headline">Welcome to <span>India's</span><br>E‑Voting Portal</h1>
+    <p class="sub">Election Commission of India &nbsp;·&nbsp; General Elections 2026</p>
+    <div class="divider"></div>
+
+    <p class="lang-prompt">Choose your language preference</p>
+
+    <div class="lang-grid">
+
+      <!-- English -->
+      <a class="lang-btn" href="{{ url_for('voter.home', lang='en') }}" onclick="pick(this)">
+        <div class="lang-native">English</div>
+      </a>
+
+      <!-- Hindi -->
+      <a class="lang-btn" href="{{ url_for('voter.home', lang='hi') }}" onclick="pick(this)">
+        <div class="lang-native">हिन्दी</div>
+      </a>
+
+      <!-- Kannada -->
+      <a class="lang-btn" href="{{ url_for('voter.home', lang='kn') }}" onclick="pick(this)">
+        <div class="lang-native">ಕನ್ನಡ</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div class="footer">
+    <span>🔒</span> Secured by Election Commission of India &nbsp;|&nbsp; Voter Helpline: <span>1950</span>
+    &nbsp;|&nbsp; Jai Hind 🇮🇳
+  </div>
+
+  <script>
+    // ── Ashoka Chakra on canvas ──
+    const canvas = document.getElementById('chakra');
+    const ctx = canvas.getContext('2d');
+    const CX = canvas.width / 2;
+    const CY = canvas.height / 2;
+    const COLOR = '#000080';
+    let angle = 0;
+
+    function drawChakra(rot) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.translate(CX, CY);
+      ctx.rotate(rot);
+
+      const R_OUTER = 48;   // outer ring radius
+      const R_BEAD = 44;   // bead centre radius
+      const R_INNER = 36;   // inner ring (spoke end)
+      const R_HUB = 5;    // centre hub
+      const BEAD_R = 3.2;  // bead dot radius
+      const SPOKE_W = 1.8;
+
+      ctx.strokeStyle = COLOR;
+      ctx.fillStyle = COLOR;
+      ctx.lineWidth = 3;
+
+      // outer ring
+      ctx.beginPath();
+      ctx.arc(0, 0, R_OUTER, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // inner ring
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(0, 0, R_INNER, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 24 spokes
+      ctx.lineWidth = SPOKE_W;
+      for (let i = 0; i < 24; i++) {
+        const a = (i * Math.PI * 2) / 24;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * R_HUB, Math.sin(a) * R_HUB);
+        ctx.lineTo(Math.cos(a) * R_INNER, Math.sin(a) * R_INNER);
+        ctx.stroke();
+      }
+
+      // 24 beads on outer ring
+      for (let i = 0; i < 24; i++) {
+        const a = (i * Math.PI * 2) / 24;
+        ctx.beginPath();
+        ctx.arc(Math.cos(a) * R_BEAD, Math.sin(a) * R_BEAD, BEAD_R, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // centre hub
+      ctx.beginPath();
+      ctx.arc(0, 0, R_HUB, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    // animate rotation
+    function animate() {
+      angle += 0.004;
+      drawChakra(angle);
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // ── floating particles ──
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      --d: ${6 + Math.random() * 10}s;
+      --delay: ${Math.random() * 10}s;
+      width: ${2 + Math.random() * 4}px;
+      height: ${2 + Math.random() * 4}px;
+      opacity: ${0.2 + Math.random() * 0.5};
+    `;
+      container.appendChild(p);
+    }
+
+    // click animation
+    function pick(el) {
+      el.classList.add('selected');
+      const url = new URL(el.href);
+      const lang = url.searchParams.get('lang');
+      localStorage.setItem('preferredLang', lang);
+    }
+  </script>
+</body>
+
+</html>
