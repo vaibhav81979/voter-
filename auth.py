@@ -11,6 +11,7 @@ from functools import wraps
 import bcrypt
 import jwt
 from flask import request, jsonify, session, redirect, url_for, flash
+from models import IST
 
 
 # ---------------------------------------------------------------------------
@@ -36,8 +37,8 @@ def generate_token(user_id: int, role: str, secret: str, expiry_hours: int = 2) 
     payload = {
         "user_id": user_id,
         "role": role,
-        "exp": datetime.now(timezone.utc) + timedelta(hours=expiry_hours),
-        "iat": datetime.now(timezone.utc),
+        "exp": datetime.now(IST) + timedelta(hours=expiry_hours),
+        "iat": datetime.now(IST),
     }
     return jwt.encode(payload, secret, algorithm="HS256")
 

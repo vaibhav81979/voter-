@@ -2,8 +2,14 @@
 SQLAlchemy database models for the National E-Voting Portal.
 """
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from flask_sqlalchemy import SQLAlchemy
+
+# Indian Standard Time (IST)
+IST = timezone(timedelta(hours=5, minutes=30))
+
+def get_ist_now():
+    return datetime.now(IST)
 
 db = SQLAlchemy()
 
@@ -24,7 +30,7 @@ class Voter(db.Model):
     face_image_path = db.Column(db.String(300))
     is_verified = db.Column(db.Boolean, default=False)
     has_voted = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime, default=get_ist_now)
 
     def __repr__(self):
         return f"<Voter {self.epic_number}>"
@@ -38,7 +44,7 @@ class Admin(db.Model):
     password_hash = db.Column(db.String(200), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     role = db.Column(db.String(30), default="officer")  # officer, chief
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime, default=get_ist_now)
 
 
 class Election(db.Model):
@@ -77,7 +83,7 @@ class Vote(db.Model):
     transaction_id = db.Column(db.String(50), unique=True, nullable=False)
     
     # Blockchain linkage fields
-    timestamp = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    timestamp = db.Column(db.DateTime, default=get_ist_now)
     previous_hash = db.Column(db.String(64), nullable=False, default="GENESIS")
     nonce = db.Column(db.Integer, nullable=False, default=0)
     hash = db.Column(db.String(64), unique=True, nullable=False, default="GENESIS_HASH")
@@ -93,16 +99,38 @@ class OTP(db.Model):
     otp_hash = db.Column(db.String(64), nullable=False)
     expires_at = db.Column(db.DateTime, nullable=False)
     is_used = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime, default=get_ist_now)
 
 
 class FraudAlert(db.Model):
     __tablename__ = "fraud_alerts"
 
     id = db.Column(db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    timestamp = db.Column(db.DateTime, default=get_ist_now)
     alert_type = db.Column(db.String(50), nullable=False)        # duplicate_epic, face_auth_failure, etc.
     constituency = db.Column(db.String(100))
     detail = db.Column(db.Text)
     risk_level = db.Column(db.String(20), default="medium")      # low, medium, high, critical
     is_resolved = db.Column(db.Boolean, default=False)
+
+
+class Configuration(db.Model):
+    """System-wide settings stored as key-value pairs."""
+    __tablename__ = "configurations"
+    key = db.Column(db.String(50), primary_key=True)
+    value = db.Column(db.String(500))
+
+    @staticmethod
+    def get(key, default=None):
+        config = Configuration.query.filter_by(key=key).first()
+        return config.value if config else default
+
+    @staticmethod
+    def set(key, value):
+        config = Configuration.query.filter_by(key=key).first()
+        if config:
+            config.value = str(value)
+        else:
+            config = Configuration(key=key, value=str(value))
+            db.session.add(config)
+        db.session.commit()

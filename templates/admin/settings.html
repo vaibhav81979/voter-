@@ -121,11 +121,11 @@
                             <div>
                                 <label class="block text-sm font-bold text-slate-700 mb-1">Current Active Phase</label>
                                 <select name="phase" class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary shadow-sm h-12">
-                                    <option value="1">Phase I (Completed)</option>
-                                    <option value="2">Phase II (Completed)</option>
-                                    <option value="3" selected>Phase III (Active - Live Voting)</option>
-                                    <option value="4">Phase IV (Upcoming)</option>
-                                    <option value="0">Voting Paused / Suspended</option>
+                                    <option value="1" {% if configs.phase == '1' %}selected{% endif %}>Phase I (Completed)</option>
+                                    <option value="2" {% if configs.phase == '2' %}selected{% endif %}>Phase II (Completed)</option>
+                                    <option value="3" {% if configs.phase == '3' %}selected{% endif %}>Phase III (Active - Live Voting)</option>
+                                    <option value="4" {% if configs.phase == '4' %}selected{% endif %}>Phase IV (Upcoming)</option>
+                                    <option value="0" {% if configs.phase == '0' %}selected{% endif %}>Voting Paused / Suspended</option>
                                 </select>
                             </div>
                         </div>
@@ -143,9 +143,9 @@
                                     <p class="text-xs text-slate-500">Tolerance level for biometric encodings distance.</p>
                                 </div>
                                 <select name="face_tolerance" class="rounded-lg border-slate-300 focus:border-primary focus:ring-primary shadow-sm">
-                                    <option value="0.6">Low (0.60 distance)</option>
-                                    <option value="0.5" selected>Standard (0.50 distance)</option>
-                                    <option value="0.4">High Strictness (0.40 distance)</option>
+                                    <option value="0.6" {% if configs.face_tolerance == '0.6' %}selected{% endif %}>Low (0.60 distance)</option>
+                                    <option value="0.5" {% if configs.face_tolerance == '0.5' %}selected{% endif %}>Standard (0.50 distance)</option>
+                                    <option value="0.4" {% if configs.face_tolerance == '0.4' %}selected{% endif %}>High Strictness (0.40 distance)</option>
                                 </select>
                             </div>
                             <hr class="border-slate-100">
@@ -155,7 +155,7 @@
                                     <p class="text-xs text-slate-500">Require blinks or head movement during face capture.</p>
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer">
-                                  <input type="checkbox" name="liveness" value="true" class="sr-only peer" checked>
+                                  <input type="checkbox" name="liveness" value="true" class="sr-only peer" {% if configs.liveness == 'true' %}checked{% endif %}>
                                   <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
                                 </label>
                             </div>
@@ -166,7 +166,7 @@
                                     <p class="text-xs text-slate-500">Flag multiple votes from the same IP address quickly.</p>
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer">
-                                  <input type="checkbox" name="velocity" value="true" class="sr-only peer" checked>
+                                  <input type="checkbox" name="velocity" value="true" class="sr-only peer" {% if configs.velocity == 'true' %}checked{% endif %}>
                                   <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
                                 </label>
                             </div>
@@ -183,9 +183,9 @@
                                 <label class="block text-sm font-bold text-slate-700 mb-1">Proof-of-Work Difficulty</label>
                                 <p class="text-xs text-slate-500 mb-2">Higher numbers exponentially increase calculation time to cast votes.</p>
                                 <select name="pow_difficulty" class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary shadow-sm h-12">
-                                    <option value="1">Level 1 (Very Fast)</option>
-                                    <option value="2" selected>Level 2 (Standard)</option>
-                                    <option value="3">Level 3 (High Security - Slow)</option>
+                                    <option value="1" {% if configs.pow_difficulty == '1' %}selected{% endif %}>Level 1 (Very Fast)</option>
+                                    <option value="2" {% if configs.pow_difficulty == '2' %}selected{% endif %}>Level 2 (Standard)</option>
+                                    <option value="3" {% if configs.pow_difficulty == '3' %}selected{% endif %}>Level 3 (High Security - Slow)</option>
                                 </select>
                             </div>
                         </div>

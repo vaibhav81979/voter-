@@ -7,7 +7,7 @@ from flask import (
     flash, session, jsonify,
 )
 
-from models import db, Admin, Voter, Election, Candidate, Vote, FraudAlert
+from models import db, Admin, Voter, Election, Candidate, Vote, FraudAlert, Configuration
 from auth import hash_password, verify_password, admin_required
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -260,17 +260,34 @@ def api_election_results():
 @admin_required
 def settings():
     """System configuration and settings."""
-    # Assuming stats isn't strictly required for sidebar on settings, or we fetch it:
     stats = _get_dashboard_stats()
-    return render_template("admin/settings.html", stats=stats)
+    
+    # Fetch all configurations from DB
+    config_keys = ['phase', 'face_tolerance', 'liveness', 'velocity', 'pow_difficulty']
+    configs = {key: Configuration.get(key) for key in config_keys}
+    
+    # Defaults for first-time use
+    if not configs['phase']: configs['phase'] = '3'
+    if not configs['face_tolerance']: configs['face_tolerance'] = '0.5'
+    if configs['liveness'] is None: configs['liveness'] = 'true'
+    if configs['velocity'] is None: configs['velocity'] = 'true'
+    if not configs['pow_difficulty']: configs['pow_difficulty'] = '2'
+
+    return render_template("admin/settings.html", stats=stats, configs=configs)
 
 
 @admin_bp.route("/save-settings", methods=["POST"])
 @admin_required
 def save_settings():
     """Handle saving system settings."""
-    # In a real system, these would be saved to a Configuration table or env variables.
-    flash("System configuration successfully updated.", "success")
+    # Capture and save each configuration
+    Configuration.set('phase', request.form.get('phase'))
+    Configuration.set('face_tolerance', request.form.get('face_tolerance'))
+    Configuration.set('liveness', 'true' if request.form.get('liveness') else 'false')
+    Configuration.set('velocity', 'true' if request.form.get('velocity') else 'false')
+    Configuration.set('pow_difficulty', request.form.get('pow_difficulty'))
+    
+    flash("System configuration successfully updated and applied.", "success")
     return redirect(url_for("admin.settings"))
 
 

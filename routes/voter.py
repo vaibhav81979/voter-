@@ -12,7 +12,7 @@ from flask import (
     flash, session, jsonify, current_app,
 )
 
-from models import db, Voter, Election, Candidate, Vote, OTP, FraudAlert
+from models import db, Voter, Election, Candidate, Vote, OTP, FraudAlert, Configuration, IST
 from auth import (
     hash_password, verify_password, generate_otp, hash_otp,
     login_required, face_verified_required,
@@ -122,6 +122,16 @@ def register():
     aadhaar_hash = enc.hash_value(aadhaar)
     existing = Voter.query.filter_by(aadhaar_hash=aadhaar_hash).first()
     if existing:
+        # LOG SECURITY ALERT: Duplicate Aadhaar attempt
+        alert = FraudAlert(
+            alert_type="duplicate_aadhaar",
+            constituency=constituency,
+            detail=f"AADHAAR: {aadhaar_hash[:10]}... — Duplicate registration attempt (User: {full_name})",
+            risk_level="critical",
+        )
+        db.session.add(alert)
+        db.session.commit()
+
         flash("An account with this Aadhaar number already exists.", "error")
         return render_template("register.html"), 400
 
@@ -296,22 +306,33 @@ def api_face_verify():
             "redirect": url_for("voter.ballot"),
         })
 
-    # Check liveness first
-    liveness = check_liveness(image_b64)
-    if not liveness["alive"]:
-        # Log fraud alert
-        alert = FraudAlert(
-            alert_type="face_auth_failure",
-            constituency=voter.constituency,
-            detail=f"Liveness check failed for EPIC: {voter.epic_number}",
-            risk_level="high",
-        )
-        db.session.add(alert)
-        db.session.commit()
-        return jsonify({"success": False, "message": liveness["message"]}), 400
+    # Fetch configuration
+    liveness_enabled = Configuration.get('liveness', 'true') == 'true'
+    
+    # Check liveness if enabled
+    if liveness_enabled:
+        liveness = check_liveness(image_b64)
+        if not liveness["alive"]:
+            # Log fraud alert
+            alert = FraudAlert(
+                alert_type="face_auth_failure",
+                constituency=voter.constituency,
+                detail=f"Liveness check failed for EPIC: {voter.epic_number}",
+                risk_level="high",
+            )
+            db.session.add(alert)
+            db.session.commit()
+            return jsonify({"success": False, "message": liveness["message"]}), 400
 
-    # Verify face
-    result = verify_face(voter.face_encoding, image_b64)
+    # Verify face with dynamic tolerance
+    tolerance_val = float(Configuration.get('face_tolerance', '0.5'))
+    # Map distance-based setting (0.4-0.6) to correlation-based threshold (40-60)
+    # distance 0.4 (High Strictness) -> correlation 60
+    # distance 0.5 (Standard) -> correlation 50
+    # distance 0.6 (Low) -> correlation 40
+    threshold = (1.0 - tolerance_val + 0.1) * 100
+    
+    result = verify_face(voter.face_encoding, image_b64, threshold=threshold)
 
     if result["match"]:
         session["voter_id"] = voter.id
@@ -441,7 +462,7 @@ def api_cast_vote():
         "candidate_name": candidate.name,
         "party": candidate.party,
         "constituency": voter.constituency,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(IST).isoformat(),
     })
     encrypted_ballot = enc.encrypt(ballot_data)
 
@@ -454,7 +475,7 @@ def api_cast_vote():
     index = (last_vote.id + 1) if last_vote else 1
     
     blockchain = VoteBlockchain(difficulty=2)
-    vote_timestamp = datetime.now(timezone.utc)
+    vote_timestamp = datetime.now(IST)
     
     nonce, block_hash = blockchain.proof_of_work(
         index=index,
@@ -488,7 +509,7 @@ def api_cast_vote():
     # Store vote info in session for receipt
     session["last_vote"] = {
         "transaction_id": transaction_id,
-        "timestamp": datetime.now(timezone.utc).strftime("%d %b %Y, %I:%M %p IST"),
+        "timestamp": datetime.now(IST).strftime("%d %b %Y, %I:%M %p IST"),
         "constituency": voter.constituency,
         "voter_name": _mask_name(voter.full_name),
     }
@@ -548,7 +569,7 @@ def epic_recovery():
     otp = OTP(
         identifier=aadhaar_hash,
         otp_hash=hash_otp(otp_code),
-        expires_at=datetime.now(timezone.utc) + timedelta(
+        expires_at=datetime.now(IST) + timedelta(
             minutes=current_app.config.get("OTP_EXPIRY_MINUTES", 5)
         ),
     )
@@ -580,7 +601,7 @@ def api_verify_otp():
     if not otp_record:
         return jsonify({"success": False, "message": "Invalid OTP."}), 400
 
-    if otp_record.expires_at < datetime.now(timezone.utc):
+    if otp_record.expires_at < datetime.now(IST):
         return jsonify({"success": False, "message": "OTP has expired."}), 400
 
     otp_record.is_used = True
@@ -617,7 +638,7 @@ def api_send_otp():
     otp = OTP(
         identifier=id_hash,
         otp_hash=hash_otp(otp_code),
-        expires_at=datetime.now(timezone.utc) + timedelta(minutes=5),
+        expires_at=datetime.now(IST) + timedelta(minutes=5),
     )
     db.session.add(otp)
     db.session.commit()
