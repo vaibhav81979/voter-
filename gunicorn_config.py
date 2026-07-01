@@ -14,8 +14,8 @@ bind = f"0.0.0.0:{os.environ.get('PORT', '8080')}"
 
 # Logging
 loglevel = "info"
-accesslog = "/var/log/evoting/access.log"
-errorlog  = "/var/log/evoting/error.log"
+accesslog = "-"
+errorlog  = "-"
 capture_output = True
 
 # Timeouts
