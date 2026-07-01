@@ -23,9 +23,12 @@ def _ensure_env():
             keys[k] = secrets.token_hex(32) if k != "AES_KEY" else secrets.token_hex(16)
             os.environ[k] = keys[k]
     if keys:
-        with open(_env_file, "a") as f:
-            for k, v in keys.items():
-                f.write(f"{k}={v}\n")
+        try:
+            with open(_env_file, "a") as f:
+                for k, v in keys.items():
+                    f.write(f"{k}={v}\n")
+        except Exception as e:
+            print(f"[WARNING] Could not persist keys to .env: {e}")
 
 _ensure_env()
 
@@ -35,9 +38,10 @@ class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY")
 
     # Database
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL", f"sqlite:///{os.path.join(BASE_DIR, 'instance', 'evoting.db')}"
-    )
+    _db_url = os.environ.get("DATABASE_URL")
+    if _db_url and _db_url.startswith("postgres://"):
+        _db_url = _db_url.replace("postgres://", "postgresql://", 1)
+    SQLALCHEMY_DATABASE_URI = _db_url or f"sqlite:///{os.path.join(BASE_DIR, 'instance', 'evoting.db')}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # JWT
