@@ -1,7 +1,5 @@
-"""
-Indian Voting System — One-Click Launcher
-Run with:  python run.py
-"""
+import eventlet
+eventlet.monkey_patch()
 
 from app import create_app, socketio
 from models import db

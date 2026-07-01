@@ -1,7 +1,5 @@
-"""
-WSGI entry point for Gunicorn.
-Gunicorn command: gunicorn --config gunicorn_config.py wsgi:application
-"""
+import eventlet
+eventlet.monkey_patch()
 
 from app import create_app, socketio
 from models import db
