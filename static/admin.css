@@ -120,8 +120,42 @@ body {
 .nav-ribbon a:hover::after, .nav-ribbon a.active::after { left: 0; right: 0; }
 .nav-ribbon a.active { color: white; background: rgba(255, 107, 0, 0.18); }
 
+/* Responsive Header Adjustments */
+.admin-nav-right {
+  margin-left: auto;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0 16px;
+    min-height: 80px;
+    gap: 12px;
+  }
+  .emblem-ring {
+    width: 48px;
+    height: 48px;
+  }
+  .header-txt h1 {
+    font-size: 16px;
+  }
+  .header-devanagari, .header-txt p {
+    display: none; /* Simplify on mobile */
+  }
+  .admin-nav-right {
+    gap: 8px;
+  }
+  .admin-user-badge {
+    display: none; /* Hide name badge on small screens to save space */
+  }
+}
+
 /* Tailwind overrides to blend smoothly */
 .font-display { font-family: 'Playfair Display', serif !important; }
 .bg-primary { background-color: var(--navy) !important; }
 .text-primary { color: var(--navy) !important; }
 .border-primary { border-color: var(--navy) !important; }
+.text-indian-green { color: var(--green-light) !important; }
+

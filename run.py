@@ -1,5 +1,5 @@
 """
-National E-Voting Portal — One-Click Launcher
+Indian Voting System — One-Click Launcher
 Run with:  python run.py
 """
 
@@ -23,7 +23,7 @@ def main():
             print(f"[INFO] Seeding skipped (already done or error: {e})")
 
     print("\n" + "=" * 55)
-    print("  [READY] National E-Voting Portal is RUNNING!")
+    print("  [READY] Indian Voting System is RUNNING!")
     print("=" * 55)
     print("  URL        : http://localhost:8080")
     print("  Admin      : http://localhost:8080/admin/login")

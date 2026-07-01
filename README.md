@@ -1,72 +1,119 @@
-# 🇮🇳 National E-Voting Portal (Advanced Secure Voting System)
+# 🇮🇳 Indian Voting System
+### *Secure, AI-Powered, and Blockchain-Backed Voting Infrastructure*
 
-A state-of-the-art, secure electronic voting platform built to ensure the highest integrity of democratic elections. This system leverages advanced cryptographic techniques, AI-driven biometric verification, and real-time data streaming to provide a robust voting infrastructure.
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-2.0+-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![OpenCV](https://img.shields.io/badge/OpenCV-AI-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)](https://opencv.org)
+[![Blockchain](https://img.shields.io/badge/Blockchain-Secure-FFD43B?style=for-the-badge&logo=bitcoin&logoColor=black)](#)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](#)
 
 ---
 
-## 🌟 Key Features (For Presentation)
+## 📖 Overview
+The **Indian Voting System** is a state-of-the-art electronic voting platform designed to eliminate electoral fraud and ensure absolute transparency. By integrating **AI-driven biometric verification** and an **immutable Blockchain ledger**, the system provides a tamper-proof environment for democratic elections.
+
+### 🎥 Visual Preview
+| Biometric Login Interface | Admin Analytics Dashboard |
+| :---: | :---: |
+| ![Login](docs/images/login.png) | ![Dashboard](docs/images/dashboard.png) |
+
+---
+
+## ✨ Key Features
 
 ### 1. 🔐 Cryptographic Blockchain Ledger
-*   **Immutable Voting Records:** Every vote cast is secured using a **SHA-256 hashing algorithm**.
-*   **Proof-of-Work (PoW):** A custom PoW mechanism guarantees that modifying a past vote requires recalculating the entire cryptographic chain, making the system virtually tamper-proof.
-*   **Encrypted Payloads:** Voter choices and metadata are securely encrypted using **AES-256** before being attached to the blockchain.
+*   **Immutable Records:** Every vote is hashed using **SHA-256** and chained to the previous block.
+*   **Proof-of-Work (PoW):** Prevents unauthorized modification of historical data.
+*   **AES-256 Encryption:** Voter choices are encrypted at rest, ensuring complete anonymity.
 
-### 2. 👁️ AI-Powered Biometric Authentication
-*   **Face Recognition & Liveness Detection:** Utilizes deep learning to encode and verify the voter's facial structure in real-time, preventing spoofing attempts using photos or screens.
-*   **Multi-Factor Authorization:** Combines traditional credentials (EPIC Number), Aadhaar verification, and live biometrics to ensure 100% voter authenticity.
+### 2. 👁️ Biometric Authentication & Liveness Detection
+*   **Deep Learning Verification:** Real-time facial encoding using Dlib/OpenCV.
+*   **Anti-Spoofing:** Detects photos, videos, or masks to ensure the voter is physically present.
+*   **Multi-Factor Auth:** Validates EPIC Number, Aadhaar status, and Biometrics in one flow.
 
-### 3. 🛡️ Intelligent Fraud Detection Engine
-*   **Behavioral Risk Scoring:** The `FraudEngine` calculates real-time risk scores based on multiple telemetry points:
-    *   Geolocation anomalies
-    *   Suspicious timing or rapid voting attempts
-    *   Device fingerprinting and reuse
-    *   Biometric mismatches
-*   **Auto-Blocking Mechanism:** Any voter session that crosses the critical risk threshold (score $\ge$ 50) is automatically isolated, and an alert is dispatched to the Election Commission.
+### 3. 🛡️ Intelligent Fraud Detection (FraudEngine)
+*   **Real-time Risk Scoring:** Monitors geolocation, session behavior, and device fingerprinting.
+*   **Automatic Isolation:** Any session with a risk score > 50 is instantly flagged and blocked.
+*   **CEO Alerts:** Immediate notification to the Election Commission for suspicious activities.
 
-### 4. 📊 Real-Time Admin Dashboard
-*   **Live Turnout Streaming:** Integrated **Flask-SocketIO** with WebSockets to push live analytics to the admin dashboard every 5 seconds.
-*   **Centralized Security Logs:** Chief Electoral Officers can instantly monitor active fraud alerts, resolve issues, and view demographic voting metrics without ever refreshing the page.
+### 4. 📊 Live Turnout Analytics
+*   **WebSocket Integration:** Real-time data streaming via **Flask-SocketIO**.
+*   **Dynamic Visualizations:** Live demographic stats, turnout percentages, and regional heatmaps.
+
+---
+
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    A[Voter Registration] -->|Face Encodings| B[(Secure SQL Database)]
+    C[Voter Login] -->|EPIC Number| D{Face Liveness Check}
+    D -->|Verified| E[Secure Ballot Box]
+    D -->|Failed| F[Fraud Alert & Block]
+    E -->|Cast Vote| G[AES-256 Encryption]
+    G --> H[PoW Hash Calculation]
+    H --> I[Immutable Blockchain]
+    I --> J[SocketIO Real-time Stream]
+    J --> K[Admin Security Dashboard]
+```
 
 ---
 
 ## 🛠️ Technology Stack
-
-*   **Backend Framework:** Python / Flask
-*   **Database:** SQLite / SQLAlchemy ORM
-*   **Real-time Communication:** WebSockets (Flask-SocketIO)
-*   **Security & Encryption:** Cryptography (AES-256), Hashlib (SHA-256), Bcrypt (Password Hashing)
-*   **Biometrics:** OpenCV / `face_recognition` library
-*   **Frontend UI:** HTML5, Tailwind CSS, Jinja2 Templating, JavaScript
+*   **Backend:** Python 3.9+, Flask
+*   **Database:** SQLite (SQLAlchemy ORM)
+*   **AI/ML:** OpenCV, face_recognition, Dlib
+*   **Security:** Cryptography (AES), Bcrypt, Hashlib
+*   **Real-time:** Flask-SocketIO (WebSockets)
+*   **Frontend:** HTML5, Tailwind CSS, JavaScript, Jinja2
 
 ---
 
-## 🚀 How to Run the Project Locally
+## 📂 Project Structure
+```text
+├── app.py              # Main Application Entry
+├── auth.py             # Authentication Logic
+├── blockchain.py       # Blockchain Implementation
+├── face_auth.py        # AI Biometric Engine
+├── fraud_engine.py     # Fraud Detection Logic
+├── encryption.py       # AES Security Utilities
+├── models.py           # Database Schema
+├── static/             # Assets (CSS, JS, Images)
+├── templates/          # HTML Views
+└── docs/               # Presentation Resources
+```
 
-1. **Install Dependencies:**
-   Make sure you have Python installed, then install the required libraries:
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+```bash
+pip install flask flask-sqlalchemy flask-socketio cryptography bcrypt face_recognition opencv-python
+```
+
+### 2. Installation
+1. Clone the repository
+2. Run the initialization script:
    ```bash
-   pip install flask flask-sqlalchemy flask-socketio flask-limiter flask-wtf cryptography bcrypt face_recognition opencv-python
+   python init_db.py
    ```
-
-2. **Launch the Portal:**
-   Simply run the start script. This will automatically seed the database and launch the background web server on port 8080:
+3. Start the server:
    ```bash
    python run.py
    ```
 
-3. **Access the Application:**
-   *   **Voter Portal:** [http://localhost:8080](http://localhost:8080)
-   *   **Admin Dashboard:** [http://localhost:8080/admin/login](http://localhost:8080/admin/login)
-
-### Demo Credentials
-*   **Admin Access:** `admin` / `admin123`
-*   **Sample Voter EPIC:** `ABC1234567` (Used for testing face registration and ballot access)
+### 3. Demo Credentials
+*   **Admin Dashboard:** `admin` / `admin123`
+*   **Test Voter EPIC:** `ABC1234567`
+*   **Portal URL:** `http://localhost:8080`
 
 ---
 
-## 📈 System Architecture Workflow
-1. **Registration:** Voter details + Face Encodings are saved.
-2. **Authentication:** Voter logs in via EPIC -> Face Liveness Check -> Authorized.
-3. **Ballot Access:** Voter selects a candidate.
-4. **Blockchain Insertion:** Vote is AES encrypted $\rightarrow$ PoW Hash calculated $\rightarrow$ Chained to previous vote.
-5. **Analytics Broadcast:** SocketIO detects the database change and updates the CEO dashboard instantly.
+## 🛡️ Security & Impact
+- **Transparency:** Anyone can verify the blockchain integrity.
+- **Accessibility:** Vote from any authorized biometric kiosk.
+- **Integrity:** Zero tolerance for double voting or identity theft.
+
+---
+*Developed for the National Election Commission | © 2026*

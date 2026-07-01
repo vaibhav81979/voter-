@@ -43,8 +43,8 @@
             <div class="header-devanagari">भारत निर्वाचन आयोग</div>
             <p>Electronic Voting Portal &nbsp;·&nbsp; General Elections 2026</p>
         </div>
-        <div style="margin-left:auto; display:flex; gap:20px; align-items:center;">
-             <span class="text-xs font-bold text-white/80 uppercase tracking-widest border border-white/20 rounded-xl px-4 py-1">{{ session.get('admin_name', 'Admin') }}</span>
+        <div class="admin-nav-right">
+             <span class="admin-user-badge text-xs font-bold text-white/80 uppercase tracking-widest border border-white/20 rounded-xl px-4 py-1">{{ session.get('admin_name', 'Admin') }}</span>
              <a href="{{ url_for('admin.admin_logout') }}" class="text-sm text-white/70 hover:text-white font-bold transition-colors">Logout ⏏</a>
         </div>
     </header>
